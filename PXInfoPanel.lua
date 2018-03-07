@@ -1,0 +1,1499 @@
+PXInfoPanelAddon = {
+  Name = "PXInfoPanel",
+  Version = "0.0.28",
+  DividerLine = '-----------------------------------------------------------------------------',
+  StartTimeMS = 0,
+  TimeElapsedMS = 0,
+  TotalGoldMade = 0,
+  StartGold = 0,
+  StartXP = 0,
+  StartAP = 0,
+  XpNeededForNextLevel = 0,
+  CurrentXP = 0,
+  CurrentAP = 0,
+  MaxXP = 0,
+  LastGold = 0,
+  LastWritVouchers = 0,
+  Showing = true,
+  LastLoot = '',
+  LastLootLogged = '',
+  LastLoot2 = '',
+  LastLoot3 = '',
+  LastLoot4 = '',
+  LastLoot5 = '',
+  BestLoot = '',
+  BestLoot2 = '',
+  BestLoot3 = '',
+  BestLoot4 = '',
+  BestLoot5 = '',
+  BestLootWorth = 0,
+  BestLootWorth2 = 0,
+  BestLootWorth3 = 0,
+  BestLootWorth4 = 0,
+  BestLootWorth5 = 0,
+  LastLoreBookLearned = '',
+  GoldIconText = zo_iconTextFormat("esoui/art/bank/bank_tabicon_gold_up.dds", 32, 32, " "),
+  EarnedAchievementPoints = 0,
+  TotAchievementPoints = 0,
+  IsEnlightenedAvailableForCharacter = false,
+  EnlightenedPool = 0,
+  HasBeenNotifiedAboutNoEnlightenment = false,
+  WritStatusText = '',
+  PVPInfo = {},
+  PVPLastAchievementUpdate = GetTimeStamp(),
+  PVPLastAchievementId = -1,
+
+  ColorGold   = '|cd8b620',
+  ColorGreen  = '|c28b712',
+  ColorOrange = '|cf7952c',
+  ColorRed    = '|cd61b1b',
+  ColorWhite  = '|cffffff',
+  ColorBlue   = '|c2d64bc',
+
+  DefaultSettings = {
+    allWritsDoneNotified = false,
+    left = 5,
+    top = 20,
+    fontColor = ZO_ColorDef:New("FFFFFF"),
+    fontScale = 1,
+    transparency = 0,
+    showTime = true,
+    showLastLoot = true,
+    showLastLootInChat = false,
+    showLastLootAndGoldInChat = false,
+    showLastLootTrait = false,
+    showBestLoot = true,
+    showBestLoot2 = false,
+    showBestLoot3 = false,
+    showBestLoot4 = false,
+    showBestLoot5 = false,
+    showBestLootNotification = true,
+    showMaterialInventory = true,
+    showMaterialInventoryCondensed = true,
+    showAchievements = true,
+    showEnlightenedPool = true,
+    showTotalMinutesPlayed = true,
+    showTotalGoldMade = true,
+    showTotalXPMade = true,
+    showTotalWritVouchers = true,
+    showLastLoreBookLearned = false,
+    showPVPInfo = false,
+    showPVPInfoOnlyWhenInPVP = false,
+    showPVPRank = false,
+    showPVPQueueTimeWhenQueued = false,
+    notifyOnLootAbove = 1000,
+    playSoundOnNotifyOnLootAbove = false,
+    notifyOnLoreBooks = true,
+    showWritStatus = true,
+    showWritStatusCondensed = true,
+    showLevelProgress = true,
+    showGrindStatus = true,
+    showBiSLootNotifications = true,
+    hideInfoPanelWhenViewInventory = false,
+    showGroupLoot = false,
+    lastLootLines = 1,
+    showAchievementProgressInChat = false,
+    customMonitor1 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor2 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor3 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor4 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor5 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor6 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor7 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor8 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor9 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+    customMonitor10 = { Show = false, SearchText = '', DisplayText = '', Count = 0 },
+  },
+  MonitorMaterial = {
+    { Name = GetString(PXIP_RAW_ANCESTOR_SILK),  RefinedName = GetString(PXIP_RAW_ANCESTOR_SILK_REFINED_NAME),  ShortName = GetString(PXIP_RAW_ANCESTOR_SILK_SHORT_NAME),  Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71200:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64504:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
+    { Name = GetString(PXIP_RUBEDITE_ORE),       RefinedName = GetString(PXIP_RUBEDITE_ORE_REFINED_NAME),       ShortName = GetString(PXIP_RUBEDITE_ORE_SHORT_NAME),       Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71198:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64489:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
+    { Name = GetString(PXIP_ROUGH_RUBY_ASH),     RefinedName = GetString(PXIP_ROUGH_RUBY_ASH_REFINED_NAME),     ShortName = GetString(PXIP_ROUGH_RUBY_ASH_SHORT_NAME),     Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71199:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', RefinedLink = '|H0:item:64502:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
+    { Name = GetString(PXIP_RUBEDO_HIDE_SCRAPS), RefinedName = GetString(PXIP_RUBEDO_HIDE_SCRAPS_REFINED_NAME), ShortName = GetString(PXIP_RUBEDO_HIDE_SCRAPS_SHORT_NAME), Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71239:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64506:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
+  },
+}
+
+PXInfoPanelAddon.WritStatus = {
+  BlackSmithing = false,
+  BlackSmithingColor = PXInfoPanelAddon.ColorRed,
+  BlackSmithingPickedUp = false,
+  Clothing = false,
+  ClothingColor = PXInfoPanelAddon.ColorRed,
+  ClothingPickedUp = false,
+  Woodworking = false,
+  WoodworkingColor = PXInfoPanelAddon.ColorRed,
+  WoodworkingPickedUp = false,
+  Alchemy = false,
+  AlchemyColor = PXInfoPanelAddon.ColorRed,
+  AlchemyPickedUp = false,
+  Enchanting = false,
+  EnchantingColor = PXInfoPanelAddon.ColorRed,
+  AlchemyPickedUp = false,
+  Provisioning = false,
+  ProvisioningColor = PXInfoPanelAddon.ColorRed,
+  ProvisioningPickedUp = false,
+}
+
+PXInfoPanelAddon.savedVariables = PXInfoPanelAddon.DefaultSettings
+
+---------------------------------------------------------------------------------------------------------
+-- Initialize:
+---------------------------------------------------------------------------------------------------------
+function PXInfoPanelAddon:Initialize()
+  ZO_CreateStringId("SI_BINDING_NAME_PX_INFO_PANEL_RESET", GetString(PXIP_BINDINGS_RESET))
+  ZO_CreateStringId("SI_BINDING_NAME_PX_INFO_PANEL_TOGGLE", GetString(PXIP_BINDINGS_TOGGLE))
+
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall1 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall2 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall3 = 0
+
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance1 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance2 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance3 = 0
+
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall1 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall2 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall3 = 0
+
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance2 = 0
+  PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance3 = 0
+  ------------
+  -- EVENTS --
+  ------------
+
+  ---------
+  -- PVP --
+  ---------
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_KEEP_RESOURCE_UPDATE,
+    function(eventCode, keepId)
+      local keepName = GetKeepName(keepId)
+      local keepType = GetKeepResourceType(keepId)
+      if keepType == 0 then
+        keepType = GetKeepType(keepId)
+      end
+      d('PXIP -- Keep = ' .. keepName .. ', KeepType = ' .. keepType)
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ALLIANCE_POINT_UPDATE,
+    function(eventCode, alliancePoints, playSound, difference, reason)
+      if (difference > 1) then
+        PXInfoPanelAddon.PVPInfo.RankPoints = alliancePoints
+        PXInfoPanelAddon.PVPInfo.Difference = difference
+        PXInfoPanelAddon.PVPInfo.DifferenceReason = reason
+        PXInfoPanelAddon:UpdateUI()
+      end
+      if (difference >= 500) then
+        d('PXIP ===========> TICK <=========== ' .. difference .. ' alliance points.')
+        PXInfoPanelAddon:Notify(GetString(PXIP_GAINED) .. difference .. ' AP.' .. GetString(PXIP_NOW_AT) .. PXInfoPanelAddon:MoneyString(alliancePoints) .. ' !!' , SOUNDS.ACHIEVEMENT_AWARDED)
+      end
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ASSIGNED_CAMPAIGN_CHANGED,
+    function(eventCode, newAssignedCampaignId)
+      PXInfoPanelAddon.PVPInfo.CampaignId = newAssignedCampaignId
+      PXInfoPanelAddon.PVPInfo.CampaignName = GetCampaignName(newAssignedCampaignId)
+      PXInfoPanelAddon:UpdateUI()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_CAMPAIGN_LEADERBOARD_DATA_CHANGED,
+    function(eventCode)
+      local campaignId = GetCurrentCampaignId()
+      local playerAllianceId = GetUnitAlliance("player")
+      local playerIndex = GetScoreboardPlayerEntryIndex()
+      local leaderBoardEntries = GetNumCampaignLeaderboardEntries(campaignId)
+
+      local playerRank = 0
+      for x = 1, 100 do
+        local isPlayer, ranking, charName, alliancePoints, classId, allianceId, displayName = GetCampaignLeaderboardEntryInfo(campaignId, x)
+        if (isPlayer) then
+          playerRank = x
+          break
+        end
+      end
+
+      if (playerRank > 0) then
+        if (playerRank == 1) then
+          local isPlayer, ranking1, charName1, alliancePoints1, classId1, allianceId1, displayName1 = GetCampaignLeaderboardEntryInfo(campaignId, 1)
+          local isPlayer, ranking2, charName2, alliancePoints2, classId2, allianceId2, displayName2 = GetCampaignLeaderboardEntryInfo(campaignId, 2)
+          d('PXIP -- Overall #1 -- ' .. self:MoneyString(alliancePoints1 - alliancePoints2) .. ' points to no 2 ' .. charName2 .. '@' .. displayName2 .. ' (' .. GetAllianceName(allianceId) .. ')')
+        else
+          local isPlayer, ranking1, charName1, alliancePoints1, classId1, allianceId1, displayName1 = GetCampaignLeaderboardEntryInfo(campaignId, playerRank - 1)
+          local isPlayer, ranking2, charName2, alliancePoints2, classId2, allianceId2, displayName2 = GetCampaignLeaderboardEntryInfo(campaignId, playerRank)
+          local isPlayer, ranking3, charName3, alliancePoints3, classId3, allianceId3, displayName3 = GetCampaignLeaderboardEntryInfo(campaignId, playerRank + 1)
+          
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall1
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall1 = alliancePoints1 - alliancePoints2
+          
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall1
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall1 = alliancePoints2 - alliancePoints3
+          
+          local diffText1 = ''
+          diff1 = PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall2 - PXInfoPanelAddon.PVPInfo.AlliancePointsToNextOverall1
+          if (diff1 > 0) then
+            diffText1 = 'Gained ' .. self:MoneyString(diff1) .. '!!'
+          else
+            diffText1 = 'Lost ' .. self:MoneyString(diff1)
+          end
+
+          local diffText2 = ''
+          diff2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall1 - PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousOverall2
+          if (diff2 > 0) then
+            diffText2 = 'Gained ' .. self:MoneyString(diff2) .. '!!'
+          else
+            diffText2 = 'Lost ' .. self:MoneyString(diff2)
+          end
+
+          d('PXIP -- Overall #' .. playerRank .. ' -- ' ..
+            self:MoneyString(alliancePoints1 - alliancePoints2) .. ' points to no ' .. playerRank - 1 .. ', ' .. diffText1 .. ' -- ' ..
+            self:MoneyString(alliancePoints2 - alliancePoints3) .. ', to previous ' .. playerRank + 1 .. ', ' .. diffText2)
+        end
+      end
+      
+      for x = 1, 100 do
+        local isPlayer, ranking, charName, alliancePoints, classId, displayName = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, x)
+        if (isPlayer) then
+          playerRank = x
+          break
+        end
+      end
+
+      if (playerRank > 0) then
+        if (playerRank == 1) then
+          local isPlayer, ranking1, charName1, alliancePoints1, classId1, displayName1 = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, 1)
+          local isPlayer, ranking2, charName2, alliancePoints2, classId2, displayName2 = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, 2)
+          d('PXIP -- Alliance #1 -- ' .. self:MoneyString(alliancePoints1 - alliancePoints2) .. ' points to no 2 ' .. charName2 .. '@' .. displayName2)
+        else
+          local isPlayer, ranking1, charName1, alliancePoints1, classId1, displayName1 = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, playerRank - 1)
+          local isPlayer, ranking2, charName2, alliancePoints2, classId2, displayName2 = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, playerRank)
+          local isPlayer, ranking3, charName3, alliancePoints3, classId3, displayName3 = GetCampaignAllianceLeaderboardEntryInfo(campaignId, playerAllianceId, playerRank + 1)
+
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance1
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance1 = alliancePoints1 - alliancePoints2
+
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1
+          PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1 = alliancePoints2 - alliancePoints3
+          
+          local diffText1 = ''
+          diff1 = PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance2 - PXInfoPanelAddon.PVPInfo.AlliancePointsToNextAlliance1
+          if (diff1 > 0) then
+            diffText1 = 'Gained ' .. self:MoneyString(diff1) .. '!!'
+          else
+            diffText1 = 'Lost ' .. self:MoneyString(diff1)
+          end
+
+          local diffText2 = ''
+          diff2 = PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1 - PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance2
+          if (diff2 > 0) then
+            diffText2 = 'Gained ' .. self:MoneyString(diff2) .. '!!'
+          else
+            diffText2 = 'Lost ' .. self:MoneyString(diff2)
+          end
+
+          d('PXIP -- Alliance #' .. playerRank .. ' -- ' .. 
+            self:MoneyString(alliancePoints1 - alliancePoints2) .. ' points to no ' .. playerRank - 1 .. ', ' .. diffText1 .. ' -- ' ..
+            self:MoneyString(alliancePoints2 - alliancePoints3) .. ', to previous ' .. playerRank + 1 .. ', ' .. diffText2)
+        end
+      end
+
+      if (IsPlayerInAvAWorld()) then
+        if (DoesCampaignHaveEmperor(campaignId)) then
+          local emperorAlliance, emperorCharacterName, emperorDisplayName = GetCampaignEmperorInfo(campaignId)
+          d('PXIP -- Emperor is ' .. emperorCharacterName .. ' / ' .. emperorDisplayName)
+        end
+      end
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_CAMPAIGN_QUEUE_POSITION_CHANGED,
+    function(eventCode, campaignId, isGroup, position)
+      d('PXIP -- EVENT_CAMPAIGN_QUEUE_POSITION_CHANGED ' .. campaignId .. ', ' .. position)
+      PXInfoPanelAddon.PVPInfo.QueuePosition = position
+      PXInfoPanelAddon:UpdateUI()
+    end
+  )
+
+  ---------
+  -- PVE --
+  ---------
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_CHAT_MESSAGE_CHANNEL,
+    function(eventCode, channelType, fromName, text, isCustomerService, fromDisplayName)
+      if (channelType == CHAT_CHANNEL_WHISPER) then
+        PXInfoPanelAddon:Notify(PXInfoPanelAddon.ColorOrange .. zo_strformat(fromDisplayName) .. '@' .. zo_strformat(fromName) .. '|r: ' .. PXInfoPanelAddon.ColorGreen .. text, SOUNDS.ACHIEVEMENT_AWARDED)
+      end
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ACHIEVEMENT_UPDATED,
+    function(eventCode, id)
+      if (self.savedVariables.showAchievementProgressInChat == false) then
+        return
+      end
+      local sinceLast = GetTimeStamp() - self.PVPLastAchievementUpdate
+      if (sinceLast < 10 and self.PVPLastAchievementId == id) then
+        return
+      end
+
+      local name, description, points, icon, completed, date, time = GetAchievementInfo(id)
+      local numCriteria = GetAchievementNumCriteria(id)
+      local link = GetAchievementLink(id)
+
+      if (numCriteria == 1) then
+        self.PVPLastAchievementUpdate = GetTimeStamp()
+        self.PVPLastAchievementId = id
+        local description, numCompleted, numRequired = GetAchievementCriterion(id, 1)
+        d('PXIP - Achievement Update: ' .. link .. ' (' .. self:MoneyString(numCompleted) .. '/' .. self:MoneyString(numRequired) .. ') -- ' .. description)
+        PXInfoPanelAddon:UpdateUI()
+      end
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ACHIEVEMENTS_UPDATED,
+    function(eventCode)
+      PXInfoPanelAddon.EarnedAchievementPoints = GetEarnedAchievementPoints()
+      PXInfoPanelAddon.TotAchievementPoints = GetTotalAchievementPoints()
+      PXInfoPanelAddon:UpdateUI()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_CRAFT_COMPLETED,
+    function(eventCode, craftSkill)
+      PXInfoPanelAddon:UpdateWritStatus()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_EXPERIENCE_GAIN,
+    function(eventCode, reason, level, previousExperience, currentExperience, championPoints)
+      PXInfoPanelAddon.EarnedAchievementPoints = GetEarnedAchievementPoints()
+      PXInfoPanelAddon.TotAchievementPoints = GetTotalAchievementPoints()
+      PXInfoPanelAddon.IsEnlightenedAvailableForCharacter = IsEnlightenedAvailableForCharacter()
+      PXInfoPanelAddon.EnlightenedPool = GetEnlightenedPool()
+
+      PXInfoPanelAddon:UpdateUI()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_INVENTORY_SINGLE_SLOT_UPDATE,
+    function(eventCode, bagId, slotId, isNewItem, itemSoundCategory, inventoryUpdateReason, stackCountChange)
+      local itemLink = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
+      local mPrice = PXInfoPanelAddon:GetMMPrice(itemLink)
+      local tPrice = stackCountChange * mPrice
+      PXInfoPanelAddon.TotalGoldMade = PXInfoPanelAddon.TotalGoldMade + tPrice
+      PXInfoPanelAddon:UpdateUI()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_LOOT_RECEIVED,                   PXInfoPanelAddon.OnLootReceived)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_LORE_BOOK_LEARNED,               PXInfoPanelAddon.OnLoreBookLearned)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_MONEY_UPDATE,                    PXInfoPanelAddon.OnMoneyUpdate)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_RANK_POINT_UPDATE,               PXInfoPanelAddon.OnRankPointUpdated)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_WRIT_VOUCHER_UPDATE,             PXInfoPanelAddon.OnWritVoucherUpdate)
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_CLOSE_BANK,                      function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_END_CRAFTING_STATION_INTERACT,   function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_INVENTORY_FULL_UPDATE,           function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ITEM_SLOT_CHANGED,               function() PXInfoPanelAddon:UpdateWritStatus() end)
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_QUEST_ADDED,                     function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_QUEST_COMPLETE,                  function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SKILL_XP_UPDATE,                 function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_STARTED, function() PXInfoPanelAddon:UpdateWritStatus() end)
+
+  PXInfoPanelAddon.savedVariables = ZO_SavedVars:New("PXInfoPanelSavedVariables", 1, nil, PXInfoPanelAddon.DefaultSettings)
+  if (PXInfoPanelAddon.savedVariables == nil or PXInfoPanelAddon.savedVariables.left == nil) then  
+    PXInfoPanelAddon.savedVariables = PXInfoPanelAddon.DefaultSettings
+  end
+
+  PXInfoPanelAddon.accountVariables = ZO_SavedVars:NewAccountWide("PXInfoPanelAccountVariables", 1, nil, {})
+  PXInfoPanelAddon:CheckDefaultSettingsAreApplied()
+
+  -- Fade out when using Inventory etc.
+  if (PXInfoPanelAddon.savedVariables.hideInfoPanelWhenViewInventory == true) then
+    local fragment = ZO_SimpleSceneFragment:New(PXInfoPanelAddonIndicator)
+    local scene = SCENE_MANAGER:GetScene("hud")
+    scene:AddFragment(fragment)
+  end
+
+  PXInfoPanelAddon:GetPVPInfo()
+
+  PXInfoPanelAddon.StartTimeMS = GetTimeStamp()
+  PXInfoPanelAddon.StartGold = GetCurrentMoney()
+  PXInfoPanelAddon.LastGold = PXInfoPanelAddon.StartGold
+  PXInfoPanelAddon.LastWritVouchers = GetCarriedCurrencyAmount(CURT_WRIT_VOUCHERS)
+  PXInfoPanelAddon.StartXP = GetUnitXP("player")
+  PXInfoPanelAddon.StartAP = PXInfoPanelAddon.PVPInfo.RankPoints
+  PXInfoPanelAddon.LastLoot = ''
+  PXInfoPanelAddon.LastLoot2 = ''
+  PXInfoPanelAddon.LastLoot3 = ''
+  PXInfoPanelAddon.LastLoot4 = ''
+  PXInfoPanelAddon.LastLoot5 = ''
+  PXInfoPanelAddon.HasBeenNotifiedAboutNoEnlightenment = false
+  PXInfoPanelAddon.savedVariables.allWritsDoneNotified = false
+
+  PXInfoPanelAddon.BestLoot = ''
+  PXInfoPanelAddon.BestLootWorth = 0
+  PXInfoPanelAddon.BestLoot2 = ''
+  PXInfoPanelAddon.BestLootWorth2 = 0
+  PXInfoPanelAddon.BestLoot3 = ''
+  PXInfoPanelAddon.BestLootWorth3 = 0
+  PXInfoPanelAddon.BestLoot4 = ''
+  PXInfoPanelAddon.BestLootWorth4 = 0
+  PXInfoPanelAddon.BestLoot5 = ''
+  PXInfoPanelAddon.BestLootWorth5 = 0
+
+  PXInfoPanelAddon.EarnedAchievementPoints = GetEarnedAchievementPoints()
+  PXInfoPanelAddon.TotAchievementPoints = GetTotalAchievementPoints()
+  PXInfoPanelAddon.IsEnlightenedAvailableForCharacter = IsEnlightenedAvailableForCharacter()
+  PXInfoPanelAddon.EnlightenedPool = GetEnlightenedPool()
+
+  PXInfoPanelAddon:ResetCustomMonitorCounts()
+  PXInfoPanelAddon:CreateSettingsWindow()
+
+  -- Initialize the inventory counts on Ancestor Silk etc.
+  PXInfoPanelAddon:UpdateMonitoredInventory()
+
+  PXInfoPanelAddon:RestorePosition()
+  PXInfoPanelAddon:UpdateWritStatus()
+end
+
+---------------------------------------------------------------------------------------------------------
+-- KEYBINDING EVENTS:
+---------------------------------------------------------------------------------------------------------
+function PXInfoPanel_ProcessReset()
+  PXInfoPanelAddon.StartTimeMS = GetTimeStamp()
+  PXInfoPanelAddon.StartGold = GetCurrentMoney()
+  PXInfoPanelAddon.LastGold = PXInfoPanelAddon.StartGold
+  PXInfoPanelAddon.LastWritVouchers = GetCarriedCurrencyAmount(CURT_WRIT_VOUCHERS)
+
+  PXInfoPanelAddon.StartXP = GetUnitXP("player")
+  PXInfoPanelAddon:GetPVPInfo()
+  PXInfoPanelAddon.StartAP = PXInfoPanelAddon.PVPInfo.RankPoints
+
+  PXInfoPanelAddon.TotalGoldMade = 0
+  PXInfoPanelAddon.BestLoot = ''
+  PXInfoPanelAddon.BestLootWorth = 0
+  PXInfoPanelAddon.BestLoot2 = ''
+  PXInfoPanelAddon.BestLootWorth2 = 0
+  PXInfoPanelAddon.BestLoot3 = ''
+  PXInfoPanelAddon.BestLootWorth3 = 0
+  PXInfoPanelAddon.BestLoot4 = ''
+  PXInfoPanelAddon.BestLootWorth4 = 0
+  PXInfoPanelAddon.BestLoot5 = ''
+  PXInfoPanelAddon.BestLootWorth5 = 0
+
+  PXInfoPanelAddon.LastLoreBookLearned = ''
+  PXInfoPanelAddon.WritStatusText = ''
+
+  PXInfoPanelAddon:ResetCustomMonitorCounts()
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanel_ProcessToggle()
+  if PXInfoPanelAddon.Showing == true then
+    PXInfoPanelAddon.Showing = false
+    PXInfoPanelAddon:UpdateUI()
+  else
+    PXInfoPanelAddon.Showing = true
+    PXInfoPanelAddon:UpdateUI()
+  end
+end
+
+---------------------------------------------------------------------------------------------------------
+-- E V E N T S
+---------------------------------------------------------------------------------------------------------
+function PXInfoPanelAddon.OnAddOnLoaded(event, addonName)
+  if addonName == PXInfoPanelAddon.Name then
+    EVENT_MANAGER:UnregisterForEvent(addonName, event)
+    PXInfoPanelAddon:Initialize()
+  end
+end
+
+function PXInfoPanelAddon.OnRankPointUpdated(eventCode, unitTag, rankPoints, difference)
+  PXInfoPanelAddon:GetPVPInfo()
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanelAddon.OnIndicatorMoveStop()
+  PXInfoPanelAddon.savedVariables.left = PXInfoPanelAddonIndicator:GetLeft()
+  PXInfoPanelAddon.savedVariables.top = PXInfoPanelAddonIndicator:GetTop()
+end
+
+function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound, lootType, self)
+  PXInfoPanelAddon:UpdateWritStatus()
+  if itemLink == nil then
+    return
+  end
+
+  PXInfoPanelAddon:UpdateBagCounts(itemLink)
+
+  local mPrice = PXInfoPanelAddon:GetMMPrice(itemLink)
+  local tPrice = quantity * mPrice
+  local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
+  local totalStackSize = stackCountBackpack + stackCountBank + stackCountCraftBag
+
+  local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
+
+  local itemType, specializedItemType = GetItemLinkItemType(itemLink)
+
+  local knownText = ''
+  if (itemType == ITEMTYPE_RECIPE) then
+    local isKnown = IsItemLinkRecipeKnown(itemLink)
+    if (isKnown == false) then
+      knownText = ' (Unknown!)'
+    end
+  end
+
+  -- equipType:
+  -- EQUIP_SLOT_WAIST, EQUIP_TYPE_CHEST, EQUIP_TYPE_FEET, EQUIP_TYPE_HAND, EQUIP_TYPE_HEAD
+  -- EQUIP_TYPE_LEGS, EQUIP_TYPE_SHOULDERS, 
+  -- EQUIP_TYPE_MAIN_HAND, EQUIP_TYPE_NECK, EQUIP_TYPE_OFF_HAND, EQUIP_TYPE_ONE_HAND,
+  -- EQUIP_TYPE_RING, EQUIP_TYPE_TWO_HAND, EQUIP_SLOT_WRIST
+  local equipTypeLarge = false
+  if (equipType == EQUIP_TYPE_HEAD or equipType == EQUIP_TYPE_CHEST or equipType == EQUIP_TYPE_LEGS) then
+    equipTypeLarge = true
+  end
+
+  local itemLinkQuality = GetItemLinkQuality(itemLink)
+  local armorType = GetItemLinkArmorType(itemLink)
+    -- ARMORTYPE_LIGHT
+    -- ARMORTYPE_MEDIUM
+    -- ARMORTYPE_HEAVY
+  local weaponType = GetItemLinkWeaponType(itemLink)
+    -- WEAPONTYPE_AXE
+    -- WEAPONTYPE_BOW
+    -- WEAPONTYPE_DAGGER
+    -- WEAPONTYPE_FIRE_STAFF
+    -- WEAPONTYPE_FROST_STAFF
+    -- WEAPONTYPE_HAMMER
+    -- WEAPONTYPE_HEALING_STAFF
+    -- WEAPONTYPE_LIGHTNING_STAFF
+    -- WEAPONTYPE_NONE
+    -- WEAPONTYPE_RUNE
+    -- WEAPONTYPE_SHIELD
+    -- WEAPONTYPE_SWORD
+    -- WEAPONTYPE_TWO_HANDED_AXE
+    -- WEAPONTYPE_TWO_HANDED_HAMMER
+    -- WEAPONTYPE_TWO_HANDED_SWORD
+  local traitType, traitDescription, traitSubtype, traitSubtypeName, traitSubtypeDescription = GetItemLinkTraitInfo(itemLink)
+  local traitName = PXInfoPanelAddon.ColorBlue .. GetString("SI_ITEMTRAITTYPE", traitType) .. '|r'
+    -- ITEM_TRAIT_TYPE_ARMOR_DIVINES
+    -- ITEM_TRAIT_TYPE_ARMOR_INFUSED
+    -- ITEM_TRAIT_TYPE_ARMOR_STURDY
+    -- ITEM_TRAIT_TYPE_ARMOR_IMPENETRABLE
+    -- ITEM_TRAIT_TYPE_WEAPON_SHARPENED
+  local requiredChampionPoints = GetItemLinkRequiredChampionPoints(itemLink)
+  local hasSet, setName, numBonuses, numEquipped, maxEquipped = GetItemLinkSetInfo(itemLink)
+
+  local itemIconText = zo_iconTextFormat(icon, 32, 32, " ")
+
+  local playerName = zo_strformat(GetUnitName("player"))
+  local looterName = zo_strformat("<<1>>", lootedBy)
+
+  local text = ''
+  local notifyText = ''
+  if (playerName == looterName) then
+    if (totalStackSize > 1) then
+      if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
+        text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] (<<5>>) <<6>><<7>><<8>>", quantity, itemIconText, itemLink, traitName, totalStackSize, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
+      else
+        text = zo_strformat("<<1>> x <<2>><<3>> (<<4>>) <<5>><<6>><<7>>", quantity, itemIconText, itemLink, totalStackSize, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
+      end
+    else
+      if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
+        text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] <<5>><<6>><<7>>", quantity, itemIconText, itemLink, traitName, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
+      else
+        text = zo_strformat("<<1>> x <<2>><<3>> <<4>><<5>><<6>>", quantity, itemIconText, itemLink, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
+      end
+    end
+  elseif (PXInfoPanelAddon.savedVariables.showGroupLoot == true) then
+    if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
+      text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] (<<5>>) <<6>><<7>>", quantity, itemIconText, itemLink, traitName, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
+    else
+      text = zo_strformat("<<1>> x <<2>><<3>> (<<4>>) <<5>><<6>>", quantity, itemIconText, itemLink, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
+    end
+  end
+
+  if (PXInfoPanelAddon.savedVariables.showBiSLootNotifications == true and requiredChampionPoints >= 150 and itemLinkQuality > ITEM_QUALITY_MAGIC and hasSet == true) then
+    ------------------------------------------------------------------ ARMOR ------------------------------------------------------------------
+    if (itemType == ITEMTYPE_ARMOR) then
+      ------------------------------------------------------------------ DIVINE -----------------------------------------------------------------
+      if (traitType == ITEM_TRAIT_TYPE_ARMOR_DIVINES) then
+        if (armorType == ARMORTYPE_LIGHT) then
+          if (equipTypeLarge == true) then
+            notifyText = looterName .. ' picked up BiS Magicka DPS set piece -- ' .. setName
+            d('PXInfoPanel: ' .. notifyText)
+          else
+            d('PXInfoPanel: ' .. text)
+            notifyText = looterName .. ' picked up BiS Magicka DPS/Healer set piece -- ' .. setName
+          end
+        end
+        if (armorType == ARMORTYPE_MEDIUM) then
+          notifyText = looterName .. ' picked up BiS Stamina DPS set piece -- ' .. setName
+          d('PXInfoPanel: ' .. notifyText)
+        end
+      ------------------------------------------------------------------ INFUSED -----------------------------------------------------------------
+      elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_INFUSED) then
+        if (armorType == ARMORTYPE_LIGHT) then
+          if (equipTypeLarge == true) then
+            d('PXInfoPanel: ' .. text)
+            notifyText = looterName .. ' picked up BiS Healer set piece -- ' .. setName
+          end
+        elseif (armorType == ARMORTYPE_HEAVY) then
+          if (equipTypeLarge == true) then
+            d('PXInfoPanel: ' .. text)
+            notifyText = looterName .. ' picked up BiS Tank set piece -- ' .. setName
+          end
+        end
+      ------------------------------------------------------------------ STURDY  -----------------------------------------------------------------
+      elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_STURDY) then
+        if (armorType == ARMORTYPE_HEAVY) then
+          if (equipTypeLarge == false) then
+            d('PXInfoPanel: ' .. text)
+            notifyText = looterName .. ' picked up BiS Tank set piece -- ' .. setName
+          end
+        end
+      end
+    ------------------------------------------------------------------ WEAPON ------------------------------------------------------------------
+    elseif (itemType == ITEMTYPE_WEAPON) then
+      --------------------------------------------------------------- SHARPENED ----------------------------------------------------------------
+      if (traitType == ITEM_TRAIT_TYPE_ARMOR_SHARPENED) then
+        if (weaponType == WEAPON_TYPE_AXE or weaponType == WEAPON_TYPE_DAGGER or weaponType == WEAPON_TYPE_BOW or weaponType == WEAPON_TYPE_FIRE_STAFF or weaponType == WEAPON_TYPE_FROST_STAFF or weaponType == WEAPON_TYPE_LIGHTNING_STAFF or weaponType == WEAPON_TYPE_TWO_HANDED_AXE or weaponType == WEAPON_TYPE_TWO_HANDED_SWORD) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS DPS weapon set piece -- ' .. setName
+        end
+      elseif (weaponType == WEAPON_TYPE_DAGGER) then
+        if (traitType == ITEM_TRAIT_TYPE_ARMOR_INFUSED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS DPS or Tank weapon set piece -- ' .. setName
+        elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_DECISIVE) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS Tank weapon set piece -- ' .. setName
+        end
+      elseif (weaponType == WEAPON_TYPE_BOW) then
+        if (traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS Stamina Bow set piece -- ' .. setName
+        end
+      elseif (weaponType == WEAPON_TYPE_FIRE_STAFF or weaponType == WEAPON_TYPE_FROST_STAFF or weaponType == WEAPON_TYPE_LIGHTNING_STAFF) then
+        if (traitType == ITEM_TRAIT_TYPE_ARMOR_SHARPENED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS Magicka DPS Destro staff set piece -- ' .. setName
+        end
+      elseif (weaponType == WEAPON_TYPE_HEALING_STAFF) then
+        if (traitType == ITEM_TRAIT_TYPE_ARMOR_POWERED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE or traitType == ITEM_TRAIT_TYPE_ARMOR_DECISIVE) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS Healing staff set piece -- ' .. setName
+        end
+      elseif (weaponType == WEAPON_TYPE_SHIELD) then
+        if (traitType == ITEM_TRAIT_TYPE_ARMOR_STURDY or traitType == ITEM_TRAIT_TYPE_ARMOR_REINFORCED) then
+          d('PXInfoPanel: ' .. text)
+          notifyText = looterName .. ' picked up BiS Tank Shield set piece -- ' .. setName
+        end
+      end
+    end
+
+    if (notifyText ~= '' and playerName ~= looterName and PXInfoPanelAddon.savedVariables.showGroupLoot == true) then
+      notifyText = notifyText .. ' (' .. looterName .. ')'
+    end
+
+    if (notifyText ~= '') then
+      local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+      params:SetText(notifyText)
+      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+    end
+  end
+
+  -- Best loot:
+  local notified = 0
+  if (tPrice > PXInfoPanelAddon.BestLootWorth) then
+    PXInfoPanelAddon.BestLootWorth5 = PXInfoPanelAddon.BestLootWorth4
+    PXInfoPanelAddon.BestLoot5 = PXInfoPanelAddon.BestLoot4
+
+    PXInfoPanelAddon.BestLootWorth4 = PXInfoPanelAddon.BestLootWorth3
+    PXInfoPanelAddon.BestLoot4 = PXInfoPanelAddon.BestLoot3
+
+    PXInfoPanelAddon.BestLootWorth3 = PXInfoPanelAddon.BestLootWorth2
+    PXInfoPanelAddon.BestLoot3 = PXInfoPanelAddon.BestLoot2
+
+    PXInfoPanelAddon.BestLootWorth2 = PXInfoPanelAddon.BestLootWorth
+    PXInfoPanelAddon.BestLoot2 = PXInfoPanelAddon.BestLoot
+
+    PXInfoPanelAddon.BestLootWorth = tPrice
+    PXInfoPanelAddon.BestLoot = text
+
+    if (PXInfoPanelAddon.savedVariables.showBestLootNotification) then
+      local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+      params:SetText(GetString(PXIP_BEST_LOOT_SO_FAR) .. text)
+      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+      notified = 1
+    end
+  else
+    if (tPrice > PXInfoPanelAddon.BestLootWorth2) then
+      PXInfoPanelAddon.BestLootWorth5 = PXInfoPanelAddon.BestLootWorth4
+      PXInfoPanelAddon.BestLoot5 = PXInfoPanelAddon.BestLoot4
+
+      PXInfoPanelAddon.BestLootWorth4 = PXInfoPanelAddon.BestLootWorth3
+      PXInfoPanelAddon.BestLoot4 = PXInfoPanelAddon.BestLoot3
+
+      PXInfoPanelAddon.BestLootWorth3 = PXInfoPanelAddon.BestLootWorth2
+      PXInfoPanelAddon.BestLoot3 = PXInfoPanelAddon.BestLoot2
+
+      PXInfoPanelAddon.BestLootWorth2 = tPrice
+      PXInfoPanelAddon.BestLoot2 = text
+    else
+      if (tPrice > PXInfoPanelAddon.BestLootWorth3) then
+        PXInfoPanelAddon.BestLootWorth5 = PXInfoPanelAddon.BestLootWorth4
+        PXInfoPanelAddon.BestLoot5 = PXInfoPanelAddon.BestLoot4
+
+        PXInfoPanelAddon.BestLootWorth4 = PXInfoPanelAddon.BestLootWorth3
+        PXInfoPanelAddon.BestLoot4 = PXInfoPanelAddon.BestLoot3
+
+        PXInfoPanelAddon.BestLootWorth3 = tPrice
+        PXInfoPanelAddon.BestLoot3 = text
+      else
+        if (tPrice > PXInfoPanelAddon.BestLootWorth4) then
+          PXInfoPanelAddon.BestLootWorth5 = PXInfoPanelAddon.BestLootWorth4
+          PXInfoPanelAddon.BestLoot5 = PXInfoPanelAddon.BestLoot4
+
+          PXInfoPanelAddon.BestLootWorth4 = tPrice
+          PXInfoPanelAddon.BestLoot4 = text
+        else
+          if (tPrice > PXInfoPanelAddon.BestLootWorth5) then
+            PXInfoPanelAddon.BestLootWorth5 = tPrice
+            PXInfoPanelAddon.BestLoot5 = text
+          end
+        end
+      end
+    end
+  end
+
+  -- Loot notify:
+  if (notified == 0) then
+    if (PXInfoPanelAddon.savedVariables.notifyOnLootAbove >= 0 and tPrice >= PXInfoPanelAddon.savedVariables.notifyOnLootAbove) then
+      local params = nil
+      if (PXInfoPanelAddon.savedVariables.playSoundOnNotifyOnLootAbove == false) then
+        params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.NONE)
+      else
+        params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+      end
+      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+      params:SetText(text)
+      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+    end
+  end
+
+  PXInfoPanelAddon:ResetCustomMonitorCounts()
+  PXInfoPanelAddon.LastLoot5 = PXInfoPanelAddon.LastLoot4
+  PXInfoPanelAddon.LastLoot4 = PXInfoPanelAddon.LastLoot3
+  PXInfoPanelAddon.LastLoot3 = PXInfoPanelAddon.LastLoot2
+  PXInfoPanelAddon.LastLoot2 = PXInfoPanelAddon.LastLoot
+  PXInfoPanelAddon.LastLoot = text;
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanelAddon:OnLoreBookLearned(categoryIndex, collectionIndex, bookIndex, guildIndex, isMaxRank)
+  local categoryName, numCollections, categoryId = GetLoreCategoryInfo(categoryIndex)
+  local collectionName, collectionDescription, numKnownBooks, totalBooks, hidden, gamepadIcon, collectionId = GetLoreCollectionInfo(categoryIndex, collectionIndex)
+  local loreBookTitle, icon, known, bookId = GetLoreBookInfo(categoryIndex, collectionIndex, bookIndex)
+
+  if (collectionName ~= nil and collectionName ~= '') then
+    PXInfoPanelAddon.LastLoreBookLearned = GetString(PXIP_LEARNED) .. loreBookTitle .. GetString(PXIP_IN) .. collectionName .. GetString(PXIP_KNOWN) .. numKnownBooks .. ' / ' .. totalBooks .. ')'
+  else
+    PXInfoPanelAddon.LastLoreBookLearned = GetString(PXIP_LEARNED) .. loreBookTitle
+  end
+
+  if (PXInfoPanelAddon.savedVariables.notifyOnLoreBooks) then
+    local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+    params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+    params:SetText(PXInfoPanelAddon.LastLoreBookLearned)
+    CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+  end
+
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanelAddon:OnMoneyUpdate(eventCode, newMoney, oldMoney, reason)
+  PXInfoPanelAddon.TotalGoldMade = PXInfoPanelAddon.TotalGoldMade + (GetCurrentMoney() - PXInfoPanelAddon.LastGold)
+  PXInfoPanelAddon.LastGold = GetCurrentMoney()
+  PXInfoPanelAddon.LastWritVouchers = GetCarriedCurrencyAmount(CURT_WRIT_VOUCHERS)
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanelAddon:OnWritVoucherUpdate(eventCode, newWritVouchers, oldWritVouchers, reason)
+  PXInfoPanelAddon.LastWritVouchers = GetCarriedCurrencyAmount(CURT_WRIT_VOUCHERS)
+  PXInfoPanelAddon:UpdateUI()
+end
+
+-- Finally, we'll register our event handler function to be called when the proper event occurs.
+EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ADD_ON_LOADED, PXInfoPanelAddon.OnAddOnLoaded)
+
+---------------------------------------------------------------------------------------------------------
+-- H E L P E R    F U N C T I O N S
+---------------------------------------------------------------------------------------------------------
+function PXInfoPanelAddon:AdjustItemLink(e)
+  if (string.sub(e, 1, 3) == '|H1') then
+    return '|H0' .. string.sub(e, 4)
+  end
+end
+
+function PXInfoPanelAddon:GetMMPrice(itemLink)
+  local mPrice = 0
+  local mm
+
+  if (MasterMerchant ~= nil) then
+    mm = MasterMerchant:itemStats(itemLink, false)
+    if mm == nil or mm.avgPrice == nil then
+      local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
+      if sellPrice ~= nil and sellPrice > 0 then
+        mPrice = sellPrice
+      end
+      return mPrice
+    end
+
+    if mm.avgPrice and mm.avgPrice > 0 then
+      mPrice = PXInfoPanelAddon:Round(mm.avgPrice)
+    end
+  else
+    local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
+    if sellPrice ~= nil and sellPrice > 0 then
+      mPrice = sellPrice
+    end
+    return mPrice
+  end
+
+  return mPrice
+end
+
+function PXInfoPanelAddon:GetPVPInfo()
+  PXInfoPanelAddon.PVPInfo.RankPoints = GetUnitAvARankPoints("player")
+  PXInfoPanelAddon.PVPInfo.Rank, PXInfoPanelAddon.PVPInfo.SubRank = GetUnitAvARank("player")
+  PXInfoPanelAddon.PVPInfo.RankName = GetAvARankName(GetUnitGender("player"), PXInfoPanelAddon.PVPInfo.Rank)
+  PXInfoPanelAddon.PVPInfo.SubRankStartsAt,
+    PXInfoPanelAddon.PVPInfo.NextSubRankAt,
+    PXInfoPanelAddon.PVPInfo.RankStartsAt,
+    PXInfoPanelAddon.PVPInfo.NextRankAt = GetAvARankProgress(PXInfoPanelAddon.PVPInfo.RankPoints)
+  PXInfoPanelAddon.PVPInfo.PointsNeededForRank = GetNumPointsNeededForAvARank(Rank)
+end
+
+function PXInfoPanelAddon:GetTimeElapsed()
+  return GetTimeStamp() - PXInfoPanelAddon.StartTimeMS 
+end
+
+function PXInfoPanelAddon:MoneyString(amount)
+  local formatted = amount
+  while true do  
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+    if (k==0) then
+      break
+    end
+  end
+  return formatted
+end
+
+function PXInfoPanelAddon:Notify(text, sound)
+  local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(text, sound)
+  params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+  params:SetText(text)
+  CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+end
+
+function PXInfoPanelAddon:ResetCustomMonitorCounts()
+  PXInfoPanelAddon.savedVariables.customMonitor1.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor1.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor2.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor2.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor3.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor3.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor4.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor4.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor5.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor5.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor6.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor6.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor7.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor7.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor8.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor8.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor9.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor9.DisplayText = ''
+  PXInfoPanelAddon.savedVariables.customMonitor10.Count = 0
+  PXInfoPanelAddon.savedVariables.customMonitor10.DisplayText = ''
+end
+
+function PXInfoPanelAddon:RestorePosition()
+  local left = self.savedVariables.left
+  local top = self.savedVariables.top
+  if left == 0 and top == 0 then
+    left = 100
+    top = 100
+  end
+ 
+  PXInfoPanelAddonIndicator:ClearAnchors()
+  PXInfoPanelAddonIndicator:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, left, top)
+end
+
+function PXInfoPanelAddon:Round(num, idp)
+  return tonumber(string.format("%." .. (idp or 0) .. "f", num))
+  --local mult = 10^(idp or 0)
+  --return math.floor(num * mult + 0.5) / mult
+end
+
+function PXInfoPanelAddon:UpdateBagCounts(itemLink)
+  local itemName = GetItemLinkName(itemLink)
+  local formattedItemName = zo_strformat("<<1>>", itemName)
+  local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
+  local stackTotal = stackCountBackpack + stackCountBank + stackCountCraftBag
+
+  if (self.savedVariables.customMonitor1.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor1.SearchText) then
+      self.savedVariables.customMonitor1.Count = stackTotal
+      self.savedVariables.customMonitor1.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor2.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor2.SearchText) then
+      self.savedVariables.customMonitor2.Count = stackTotal
+      self.savedVariables.customMonitor2.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor3.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor3.SearchText) then
+      self.savedVariables.customMonitor3.Count = stackTotal
+      self.savedVariables.customMonitor3.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor4.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor4.SearchText) then
+      self.savedVariables.customMonitor4.Count = stackTotal
+      self.savedVariables.customMonitor4.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor5.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor5.SearchText) then
+      self.savedVariables.customMonitor5.Count = stackTotal
+      self.savedVariables.customMonitor5.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor6.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor6.SearchText) then
+      self.savedVariables.customMonitor6.Count = stackTotal
+      self.savedVariables.customMonitor6.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor7.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor7.SearchText) then
+      self.savedVariables.customMonitor7.Count = stackTotal
+      self.savedVariables.customMonitor7.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor8.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor8.SearchText) then
+      self.savedVariables.customMonitor8.Count = stackTotal
+      self.savedVariables.customMonitor8.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor9.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor9.SearchText) then
+      self.savedVariables.customMonitor9.Count = stackTotal
+      self.savedVariables.customMonitor9.DisplayText = formattedItemName
+    end
+  end
+  if (self.savedVariables.customMonitor10.Show == true) then
+    if (itemLink == self.savedVariables.customMonitor10.SearchText) then
+      self.savedVariables.customMonitor10.Count = stackTotal
+      self.savedVariables.customMonitor10.DisplayText = formattedItemName
+    end
+  end
+
+  for x = 1, #self.MonitorMaterial do
+    if (itemLink == self.MonitorMaterial[x].RefinedLink) then
+      self.MonitorMaterial[x].InventoryCount = stackCountBackpack + stackCountBank + stackCountCraftBag
+    end
+    if (itemLink == self.MonitorMaterial[x].RawLink) then
+      self.MonitorMaterial[x].RefinedInventoryCount = stackCountBackpack + stackCountBank + stackCountCraftBag
+    end
+  end
+end
+
+function PXInfoPanelAddon:UpdateWritStatus()
+  local journal = {}
+  local journalInfo = {}
+  local text = ""
+  local completedText = ""
+  local conditionText = ""
+
+  PXInfoPanelAddon.WritStatus.BlackSmithing = false
+  PXInfoPanelAddon.WritStatus.BlackSmithingColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.BlackSmithingPickedUp = false
+  PXInfoPanelAddon.WritStatus.Clothing = false
+  PXInfoPanelAddon.WritStatus.ClothingColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.ClothingPickedUp = false
+  PXInfoPanelAddon.WritStatus.Woodworking = false
+  PXInfoPanelAddon.WritStatus.WoodworkingColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = false
+  PXInfoPanelAddon.WritStatus.Alchemy = false
+  PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.AlchemyickedUp = false
+  PXInfoPanelAddon.WritStatus.Enchanting = false
+  PXInfoPanelAddon.WritStatus.EnchantingColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.EnchantingPickedUp = false
+  PXInfoPanelAddon.WritStatus.Provisioning = false
+  PXInfoPanelAddon.WritStatus.ProvisioningColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.ProvisioningPickedUp = false
+
+  local questCount = GetNumJournalQuests()
+  for questIndex = 1, questCount do
+    journalInfo = {}
+    if IsValidQuestIndex(questIndex) then
+      journalInfo.RepeatType = GetJournalQuestRepeatType(questIndex)
+      journalInfo.QuestName, journalInfo.BackgroundText, journalInfo.ActiveStepText, journalInfo.ActiveStepType,
+      journalInfo.ActiveStepTrackerOverrideText, journalInfo.Completed, journalInfo.Tracked, journalInfo.QuestLevel,
+      journalInfo.Pushed, journalInfo.QuestType, journalInfo.InstanceDisplayType = GetJournalQuestInfo(questIndex)
+
+      local questComplete = GetJournalQuestIsComplete(questIndex)
+
+      if journalInfo.QuestType == QUEST_TYPE_CRAFTING and
+         journalInfo.RepeatType == QUEST_REPEAT_DAILY then
+        table.insert(journal, journalInfo)
+
+        local steps = GetJournalQuestNumSteps(questIndex)
+        stepText, stepVisibility, stepType, stepTrackerOverrideText, conditions = GetJournalQuestStepInfo(questIndex, steps)
+
+        for conditionIndex = 1, conditions do
+          conditionText, current, max, isFailCondition, isComplete, isCreditShared, isVisible = GetJournalQuestConditionInfo(questIndex, steps, conditionIndex)
+          local subText = string.sub(conditionText, 1, 7)
+
+          local isCompleteTxt = ''
+          if (isComplete == true) then
+            isCompleteTxt = 'Yes'
+          end
+
+          local isQuestCompleteTxt = 'No'
+          if (isQuestComplete == true) then
+            isQuestCompleteTxt = 'Yes'
+          end
+
+          --if (journalInfo.QuestName == 'Provisioner Writ') then 
+          --  d('PXIP -- journalInfo.QuestName = ' .. journalInfo.QuestName)
+          --  d('PXIP -- journalInfo.ActiveStepText = ' .. journalInfo.ActiveStepText)
+          --  d('PXIP -- journalInfo.ActiveStepType = ' .. journalInfo.ActiveStepType)
+          --  d('PXIP -- journalInfo.QuestLevel = ' .. journalInfo.QuestLevel)
+          --  d('PXIP -- journalInfo.QuestType = ' .. journalInfo.QuestType)
+          --  d('PXIP -- isQuestCompleteTxt = ' .. isQuestCompleteTxt)
+          --  d('PXIP -- steps = ' .. steps)
+          --  d('PXIP -- stepText = ' .. stepText)
+          --  d('PXIP -- stepType = ' .. stepType)
+          --  d('PXIP -- conditions = ' .. conditions)
+          --  d('PXIP -- conditionIndex = ' .. conditionIndex)
+          --  d('PXIP -- conditionText = ' .. conditionText)
+          --  d('PXIP -- current = ' .. current)
+          --  d('PXIP -- max = ' .. max)
+          --  --d('PXIP -- isCompleteTxt = ' .. isCompleteTxt)
+          --  d('PXIP -- subText = ' .. subText)
+          --end
+
+          if subText == GetString(PXIP_WRITS_DELIVER) or subText == 'Brewers' then
+            completedText = GetString(PXIP_WRITS_COMPLETED)
+
+            if (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_BLACKSMITHING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.BlackSmithing = true
+              PXInfoPanelAddon.WritStatus.BlackSmithingColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.BlackSmithingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_CLOTHING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.Clothing = true
+              PXInfoPanelAddon.WritStatus.ClothingColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.ClothingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_WOODWORKING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.Woodworking = true
+              PXInfoPanelAddon.WritStatus.WoodworkingColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ALCHEMY_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.Alchemy = true
+              PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.AlchemyPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ENCHANTING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.Enchanting = true
+              PXInfoPanelAddon.WritStatus.EnchantingColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.EnchantingPickedUp = true
+            elseif(string.match(journalInfo.QuestName, GetString(PXIP_WRITS_PROVISIONING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.Provisioning = true
+              PXInfoPanelAddon.WritStatus.ProvisioningColor = PXInfoPanelAddon.ColorGreen
+              PXInfoPanelAddon.WritStatus.ProvisioningPickedUp = true
+            end
+          else
+            if (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_BLACKSMITHING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.BlackSmithingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_CLOTHING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.ClothingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_WOODWORKING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ALCHEMY_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.AlchemyPickedUp = true
+            elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ENCHANTING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.EnchantingPickedUp = true
+            elseif(string.match(journalInfo.QuestName, GetString(PXIP_WRITS_PROVISIONING_SUBSTRING))) then
+              PXInfoPanelAddon.WritStatus.ProvisioningPickedUp = true
+            end
+          end
+        end
+        text = text .. journalInfo.QuestName .. " -- " .. completedText .. "\n"
+        completedText = ""
+      end
+    end
+  end
+
+  PXInfoPanelAddon.WritStatusText = text
+  PXInfoPanelAddon:UpdateUI()
+end
+
+function PXInfoPanelAddon:UpdateUI()
+  local text = ''
+  local newLine = ''
+
+  PXInfoPanelAddon:UpdateMonitoredInventory()
+
+  if PXInfoPanelAddon.Showing == false then
+    PXInfoPanelAddonIndicator:SetHidden(true)
+  else
+    PXInfoPanelAddonIndicator:SetHidden(false)
+  end
+
+  PXInfoPanelAddon.TimeElapsedMS = PXInfoPanelAddon.GetTimeElapsed()
+  if PXInfoPanelAddon.TimeElapsedMS == 0 then
+    PXInfoPanelAddon.TimeElapsedMS = 1
+  end
+
+  local timePlayedMins = self:Round(PXInfoPanelAddon.TimeElapsedMS / 60, 0)
+  local goldAMinute = self:Round((PXInfoPanelAddon.TotalGoldMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60, 0)
+
+  local isChampion = IsUnitChampion('player')
+  local cp = GetUnitChampionPoints('player')
+
+  local nextChampPointAtXP = isChampion and GetNumChampionXPInChampionPoint(cp) or GetUnitXPMax("player")
+
+  PXInfoPanelAddon.CurrentXP = IsUnitChampion('player') and GetPlayerChampionXP() or GetUnitXP("player")
+  PXInfoPanelAddon.XpNeededForNextLevel = nextChampPointAtXP - PXInfoPanelAddon.CurrentXP
+  PXInfoPanelAddon.MaxXP = nextChampPointAtXP
+
+  local xpMade = GetUnitXP("player") - PXInfoPanelAddon.StartXP
+  if (xpMade < 0) then
+    -- This happens when leveling up
+    PXInfoPanelAddon.StartXP = 0
+    xpMade = GetUnitXP("player") - PXInfoPanelAddon.StartXP
+  end
+  local xpAMinute = self:Round((xpMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60 ,0)
+
+  --d('PXIP -- StartXP = ' .. PXInfoPanelAddon.StartXP .. ', CurrentXP = ' .. GetUnitXP('player') .. ', xpMade = ' .. xpMade .. ', xpAMinute = ' .. xpAMinute)
+
+  local levelUpInMin = 0
+  if (xpAMinute > 0) then
+    levelUpInMin = self:Round(PXInfoPanelAddon.XpNeededForNextLevel / xpAMinute, 0)
+  end
+
+  local targetLevel = IsUnitChampion('player') and GetPlayerChampionPointsEarned() +1 or GetUnitLevel('player') + 1
+  local targetType  = IsUnitChampion("player") and GetString(PXIP_CP) or GetString(PXIP_LEVEL)
+
+  if (self.savedVariables.showTime) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. ZO_FormatClockTime()
+  end
+
+  if (self.savedVariables.showLastLoot) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_LAST) .. self.LastLoot
+    newLine = '\n'
+
+    if (self.savedVariables.lastLootLines >= 2 and self.LastLoot2 ~= nil and self.LastLoot2 ~= '') then
+      text = text .. newLine .. GetString(PXIP_LAST) .. self.LastLoot2
+    end
+    if (self.savedVariables.lastLootLines >= 3 and self.LastLoot2 ~= nil and self.LastLoot3 ~= '') then
+      text = text .. newLine .. GetString(PXIP_LAST) .. self.LastLoot3
+    end
+    if (self.savedVariables.lastLootLines >= 4 and self.LastLoot2 ~= nil and self.LastLoot4 ~= '') then
+      text = text .. newLine .. GetString(PXIP_LAST) .. self.LastLoot4
+    end
+    if (self.savedVariables.lastLootLines >= 5 and self.LastLoot2 ~= nil and self.LastLoot5 ~= '') then
+      text = text .. newLine .. GetString(PXIP_LAST) .. self.LastLoot5
+    end
+  end
+
+  if (self.savedVariables.showLastLootInChat and self.LastLoot ~= '' and self.LastLoot ~= self.LastLootLogged) then
+    if (self.savedVariables.showLastLootAndGoldInChat) then
+      d(self.ColorGold .. 'PXIP ' .. self.ColorGreen .. ' -- ' .. '|r' .. self.LastLoot .. self.ColorGreen .. ' -- ' .. GetString(PXIP_TOTAL_GOLD_MADE_1) .. self:MoneyString(self.TotalGoldMade) .. ' (|cd8b620' .. self:MoneyString(goldAMinute) .. GetString(PXIP_TOTAL_GOLD_MADE_2))
+    else
+      d(self.ColorGold .. 'PXIP ' .. self.ColorGreen .. ' -- ' .. '|r' .. self.LastLoot)
+    end
+    self.LastLootLogged = self.LastLoot
+  end
+
+  if (self.savedVariables.showBestLoot) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_BEST) .. self.BestLoot
+  end
+
+  if (self.savedVariables.showBestLoot2) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_2ND) .. self.BestLoot2
+  end
+
+  if (self.savedVariables.showBestLoot3) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_3RD) .. self.BestLoot3
+  end
+
+  if (self.savedVariables.showBestLoot4) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_4TH) .. self.BestLoot4
+  end
+
+  if (self.savedVariables.showBestLoot5) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_5TH) .. self.BestLoot5
+  end
+
+  if (self.savedVariables.showMaterialInventory) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.DividerLine
+
+    if (self.savedVariables.showMaterialInventoryCondensed == false) then
+      for x = 1, #self.MonitorMaterial do
+        text = text .. newLine .. self.MonitorMaterial[x].RefinedName .. ': |c08e304' .. self.MonitorMaterial[x].InventoryCount .. '|r / |cb78a4b' .. self.MonitorMaterial[x].RefinedInventoryCount .. '|r'
+      end
+    else
+      local divider = '\n'
+      for x = 1, #self.MonitorMaterial do
+        if (x > 1) then
+          divider = ' '
+        end
+        text = text .. divider .. self.MonitorMaterial[x].ShortName .. ': |c08e304' .. self.MonitorMaterial[x].InventoryCount .. '|r / |cb78a4b' .. self.MonitorMaterial[x].RefinedInventoryCount .. '|r'
+      end
+    end
+  end
+
+  if (self.savedVariables.customMonitor1.Show == true and self.savedVariables.customMonitor1.SearchText ~= nil and self.savedVariables.customMonitor1.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor1.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor1.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor2.Show == true and self.savedVariables.customMonitor2.SearchText ~= nil and self.savedVariables.customMonitor2.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor2.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor2.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor3.Show == true and self.savedVariables.customMonitor3.SearchText ~= nil and self.savedVariables.customMonitor3.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor3.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor3.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor4.Show == true and self.savedVariables.customMonitor4.SearchText ~= nil and self.savedVariables.customMonitor4.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor4.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor4.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor5.Show == true and self.savedVariables.customMonitor5.SearchText ~= nil and self.savedVariables.customMonitor5.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor5.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor5.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor6Show == true and self.savedVariables.customMonitor6.SearchText ~= nil and self.savedVariables.customMonitor6.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor6.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor6.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor7.Show == true and self.savedVariables.customMonitor7.SearchText ~= nil and self.savedVariables.customMonitor7.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor7.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor7.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor8.Show == true and self.savedVariables.customMonitor8.SearchText ~= nil and self.savedVariables.customMonitor8.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor8.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor8.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor9.Show == true and self.savedVariables.customMonitor9.SearchText ~= nil and self.savedVariables.customMonitor9.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor9.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor9.Count .. '|r'
+  end
+  if (self.savedVariables.customMonitor10.Show == true and self.savedVariables.customMonitor10.SearchText ~= nil and self.savedVariables.customMonitor10.Count ~= nil) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.savedVariables.customMonitor10.SearchText .. ': |c08e304' .. self.savedVariables.customMonitor10.Count .. '|r'
+  end
+
+  text = text .. '\n' .. self.DividerLine
+  if (self.savedVariables.showAchievements) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_ACHIEVEMENT_POINTS) .. self:MoneyString(PXInfoPanelAddon.EarnedAchievementPoints) .. ' / ' .. self:MoneyString(PXInfoPanelAddon.TotAchievementPoints) .. ' ~ ' .. self:Round((self.EarnedAchievementPoints / self.TotAchievementPoints) * 100, 0) .. '%'
+  end
+
+  if (self.savedVariables.showEnlightenedPool and self.IsEnlightenedAvailableForCharacter) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_ENLIGHTENED_POOL) .. self:MoneyString(self.EnlightenedPool)
+
+    if GetEnlightenedPool() <= 0 and PXInfoPanelAddon.HasBeenNotifiedAboutNoEnlightenment == false then
+      PXInfoPanelAddon.HasBeenNotifiedAboutNoEnlightenment = true
+      local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+      params:SetText(GetString(PXIP_ENLIGHTENED_POOL_EXHAUSTED))
+      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+    end
+  end
+
+  if (self.savedVariables.showTotalMinutesPlayed) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_TOTAL_MINS_PLAYED) .. timePlayedMins
+  end
+
+  if (self.savedVariables.showLevelProgress and self.CurrentXP ~= nil and self.CurrentXP > 0) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_LEVEL_PROGRESS) .. self:MoneyString(self.CurrentXP) .. ' / ' .. self:MoneyString(self.MaxXP) .. ' ~ ' .. self:Round((self.CurrentXP / self.MaxXP) * 100, 0) .. '%'
+  end
+
+  if (self.savedVariables.showGrindStatus and levelUpInMin > 0) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_GRIND_STATUS_1) .. targetType .. ' ' .. targetLevel .. GetString(PXIP_GRIND_STATUS_2) .. levelUpInMin .. GetString(PXIP_GRIND_STATUS_3)
+  end
+
+  if (self.savedVariables.showTotalGoldMade) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_TOTAL_GOLD_MADE_1) .. self:MoneyString(self.TotalGoldMade) .. ' (|cd8b620' .. self:MoneyString(goldAMinute) .. GetString(PXIP_TOTAL_GOLD_MADE_2)
+  end
+
+  if (self.savedVariables.showTotalXPMade) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_TOTAL_XP_MADE_1) .. self:MoneyString(xpMade) .. ' (|cd8b620' .. self:MoneyString(xpAMinute) .. GetString(PXIP_TOTAL_XP_MADE_2)
+  end
+  
+  if (self.savedVariables.showPVPInfoOnlyWhenInPVP) then
+    if (IsInCampaign()) then
+      text = PXInfoPanelAddon:ShowPVPInformation(text, newLine)
+    end
+  else
+    text = PXInfoPanelAddon:ShowPVPInformation(text, newLine)
+  end
+
+  if (self.savedVariables.showTotalWritVouchers and self.LastWritVouchers > 0) then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. GetString(PXIP_TOTAL_WRIT_VOUCHERS) .. self:MoneyString(PXInfoPanelAddon.LastWritVouchers)
+  end
+
+  if (self.savedVariables.showLastLoreBookLearned and self.LastLoreBookLearned ~= nill and self.LastLoreBookLearned ~= '') then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+    text = text .. newLine .. self.LastLoreBookLearned
+  end
+
+  if (self.savedVariables.showWritStatus and self.WritStatusText ~= nill and self.WritStatusText ~= '') then
+    if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
+
+    if (self.savedVariables.showWritStatusCondensed) then
+      text = text .. newLine
+      if (PXInfoPanelAddon.WritStatus.BlackSmithingPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.BlackSmithingColor .. GetString(PXIP_BLACKSMITHING_LETTER)
+      end
+      if (PXInfoPanelAddon.WritStatus.ClothingPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.ClothingColor .. GetString(PXIP_CLOTHING_LETTER)
+      end
+      if (PXInfoPanelAddon.WritStatus.WoodworkingPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.WoodworkingColor .. GetString(PXIP_WOODWORKING_LETTER)
+      end
+      if (PXInfoPanelAddon.WritStatus.AlchemyPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.AlchemyColor .. GetString(PXIP_ALCHEMY_LETTER)
+      end
+      if (PXInfoPanelAddon.WritStatus.EnchantingPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.EnchantingColor .. GetString(PXIP_ENCHANTING_LETTER)
+      end
+      if (PXInfoPanelAddon.WritStatus.ProvisioningPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.ProvisioningColor .. GetString(PXIP_PROVISIONING_LETTER)
+      end
+    else
+      text = text .. newLine .. self.WritStatusText
+    end
+
+    -- Notify on all writs done:
+    if (self.savedVariables.allWritsDoneNotified == false and PXInfoPanelAddon.WritStatus.BlackSmithing and PXInfoPanelAddon.WritStatus.Clothing and PXInfoPanelAddon.WritStatus.Woodworking and PXInfoPanelAddon.WritStatus.Alchemy and PXInfoPanelAddon.WritStatus.Enchanting and PXInfoPanelAddon.WritStatus.Provisioning) then
+      local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
+      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
+      params:SetText(PXInfoPanelAddon.ColorGreen .. GetString(PXIP_WRITS_ALL_WRITS_DONE) .. PXInfoPanelAddon.ColorGold .. GetString(PXIP_WRITS_TIME_TO_TURN_THEM_IN))
+      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
+      self.savedVariables.allWritsDoneNotified = true
+    end
+  end
+
+  self:WriteLog(text)
+end
+
+function PXInfoPanelAddon:ShowPVPInformation(text, newLine)
+  PXInfoPanelAddon:GetPVPInfo()
+  local apMade = PXInfoPanelAddon.PVPInfo.RankPoints - PXInfoPanelAddon.StartAP
+  local apAMinute = self:Round((apMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60 ,0)
+
+  if (self.savedVariables.showPVPRank) then
+    text = text .. newLine .. 'PVP: ' .. PXInfoPanelAddon.PVPInfo.RankName
+  end
+
+  if (self.savedVariables.showPVPQueueTimeWhenQueued and PXInfoPanelAddon.PVPInfo.QueuePosition ~= nil and PXInfoPanelAddon.PVPInfo.QueuePosition > 0) then
+    text = text .. newLine .. 'PVP: Queue Position for ' .. PXInfoPanelAddon.PVPInfo.CampaignName .. ' is ' .. PXInfoPanelAddon.PVPInfo.QueuePosition
+  end
+
+  if (self.savedVariables.showPVPInfo) then
+    local apNeededForNextLevel = PXInfoPanelAddon.PVPInfo.NextRankAt - PXInfoPanelAddon.PVPInfo.RankPoints
+    if (apMade > 0) then
+      local apLevelUpInMin = self:Round(apNeededForNextLevel / apAMinute, 0)
+      text = text .. newLine .. 'PVP: AP Made: ' .. self:MoneyString(apMade) .. ' (|cd8b620' .. self:MoneyString(apAMinute) .. GetString(PXIP_TOTAL_XP_MADE_2)
+      text = text .. newLine .. 'PVP: Level up needs ' .. self:MoneyString(apNeededForNextLevel) .. ' AP. Level up in ' .. apLevelUpInMin .. ' minutes.'
+    else
+      text = text .. newLine .. 'PVP: Level up needs ' .. self:MoneyString(apNeededForNextLevel)
+    end
+  end
+
+  return text
+end
+
+function PXInfoPanelAddon:UpdateMonitoredInventory()
+  for x = 1, #PXInfoPanelAddon.MonitorMaterial do
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.MonitorMaterial[x].RawLink)
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.MonitorMaterial[x].RefinedLink)
+  end
+
+  if (PXInfoPanelAddon.savedVariables.customMonitor1.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor1.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor2.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor2.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor3.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor3.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor4.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor4.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor5.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor5.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor6.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor6.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor7.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor7.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor8.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor8.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor9.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor9.SearchText)
+  end
+  if (PXInfoPanelAddon.savedVariables.customMonitor10.Show == true) then
+    PXInfoPanelAddon:UpdateBagCounts(PXInfoPanelAddon.savedVariables.customMonitor10.SearchText)
+  end
+end
+
+function PXInfoPanelAddon:WriteLog(text)
+  if PXInfoPanelAddon.savedVariables.fontScale ~= nil then
+    PXInfoPanelAddonIndicatorLabel:SetScale(PXInfoPanelAddon.savedVariables.fontScale)
+  end
+  if PXInfoPanelAddon.savedVariables.fontColor ~= nil then
+    PXInfoPanelAddonIndicatorLabel:SetColor(PXInfoPanelAddon.savedVariables.fontColor.r, PXInfoPanelAddon.savedVariables.fontColor.g, PXInfoPanelAddon.savedVariables.fontColor.b)
+  end
+  PXInfoPanelAddonIndicatorBG:SetAlpha(PXInfoPanelAddon.savedVariables.transparency)
+
+  PXInfoPanelAddonIndicatorLabel:SetText(text)
+
+  local x = PXInfoPanelAddonIndicatorLabel:GetWidth()
+  local y = PXInfoPanelAddonIndicatorLabel:GetHeight()
+  PXInfoPanelAddonIndicator:SetDimensions(x + 15, y + 15)
+end
