@@ -140,6 +140,29 @@ local strings = {
   PXIP_SETTINGS_SHOW_LAST_LOOT_AND_TOTAL_GOLD_IN_CHAT= "Also log the total gold and gold/minute to chat.",
   PXIP_SETTINGS_SHOW_LAST_LOOT_TRAIT                 = "Also show trait with last loot.",
   PXIP_SETTINGS_SHOW_ACHIEVEMENT_PROGRESS_IN_CHAT    = "Log to chat when you make progress on an achievement.",
+
+  -- V0.0.31 -- New strings:
+  PXIP_SETTINGS_SHOW_DIVIDERLINE                     = "Show divider line around your materials.",
+  PXIP_SETTINGS_SHOW_DIVIDERLINE_TOOLTIP             = "Show divider line around your materials such as ancestor silk, rubdedite ore etc.",
+
+  -- V0.0.33 -- New strings:
+  PXIP_SETTINGS_VENDOR_AUTOMATION                    = "Vendor Automation",
+  PXIP_SETTINGS_VENDOR_AUTOMATION_ENABLE             = "Enable Vendor Automation",
+  PXIP_SETTINGS_VENDOR_AUTOMATION_ENABLE_TOOLTIP     = "Enable automatic purchasing from vendor as defined below.",
+  PXIP_VENDOR_AUTOMATION_MAX_GOLD_LIMIT              = "Do not spend more than",
+  PXIP_VENDOR_AUTOMATION_MAX_GOLD_LIMIT_TOOLTIP      = "When talking to a vendor, purchasing will not exceed this gold amount.",
+  PXIP_VENDOR_AUTOMATION_MAX_UNIT_PRICE              = "Max unit price",
+  PXIP_VENDOR_AUTOMATION_MAX_UNIT_PRICE_TOOLTIP      = "Will not buy any items with a unit price exceeding this value.",
+  PXIP_VENDOR_AUTOMATION_INVENTORY_COUNT             = "Inventory count you want",
+  PXIP_VENDOR_AUTOMATION_INVENTORY_COUNT_TOOLTIP     = "This is the inventory you want to have. I you want 200 and have 190, 10 will be purchased.",
+  PXIP_VENDOR_AUTOMATION_DEBUG                       = "Show chat debugging information.",
+  PXIP_VENDOR_AUTOMATION_DESCRIPTION                 = "This section is intended to automate the purchasing of style items such as Molybdenum, Bone, etc. and runes from the ESO ingame vendor. You set the amount you want of each in your inventory, the price per unit max, the max gold you want to spend in total per session, and the addon will take care of the rest. Let's say you want to always have 25 of each inventory. Then lets say you have 21 Molybdenum, this addon will buy 4 Molybdenum and move on to the next. It will not go above the set spending limits per visit. Use this with caution and at your own risk. This was made to avoid the tedious task of buying a couple hundred style materials manually.",
+  PXIP_SETTINGS_GUILDBANK_AUTOMATION                 = "Guildbank Automation",
+  PXIP_SETTINGS_GUILDBANK_AUTOMATION_DESCRIPTION     = "Here you can automate depositing or withdrawing money from a set guildbank. You set the money you want to have on your character, say 50k, and if you have above that on your character when you interact with the set guildbank, you will deposit the amount above 50k, and vice versa if you are below 50k, you will withdraw from the guild bank, up until you hold 50k on your character.",
+  PXIP_SETTINGS_GUILDBANK_AUTOMATION_ENABLE          = "Enable Guildbank Automation",
+  PXIP_GUILDBANK_NAME                                = "Name of guildbank to enable automation for:",
+  PXIP_GUILDBANK_AUTOMATION_AMOUNT                   = "Amount of gold to have on character:",
+  PXIP_GUILDBANK_AUTOMATION_AMOUNT_DESCRIPTION       = "The amount of gold you want to have on your character.",
 }
 
 for stringId, stringValue in pairs(strings) do

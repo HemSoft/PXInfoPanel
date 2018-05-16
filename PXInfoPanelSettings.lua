@@ -31,7 +31,9 @@ function PXInfoPanelAddon:CreateSettingsWindow()
       width = "full",
     },
 
-    --------------------- Window Settings ---------------------
+    ---------------------
+    -- Window Settings --
+    ---------------------
     {
       type = "submenu",
       name = GetString(PXIP_SETTINGS_WINDOW_SETTINGS),
@@ -67,6 +69,9 @@ function PXInfoPanelAddon:CreateSettingsWindow()
       }
     },
 
+    --------------------
+    -- Notify Options --
+    --------------------
     {
       type = "submenu",
       name = GetString(PXIP_SETTINGS_TOGGLE_NOTIFY_OPTIONS),
@@ -195,6 +200,14 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
         {
           type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_SHOW_DIVIDERLINE),
+          tooltip = GetString(PXIP_SETTINGS_SHOW_DIVIDERLINE_TOOLTIP),
+          getFunc = function() return self.savedVariables.showDividerLine end,
+          setFunc = function(e) self.savedVariables.showDividerLine = e; PXInfoPanelAddon:UpdateUI() end,
+          default = true,
+        },
+        {
+          type    = "checkbox",
           name    = GetString(PXIP_SETTINGS_SHOW_CONDENSED_MATERIAL_INFO),
           tooltip = GetString(PXIP_SETTINGS_SHOW_CONDENSED_MATERIAL_INFO_TOOLTIP),
           getFunc = function() return self.savedVariables.showMaterialInventoryCondensed end,
@@ -308,6 +321,117 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
       },
     },
+
+    -----------------------
+    -- Vendor Automation --
+    -----------------------
+    {
+      type = "submenu",
+      name = GetString(PXIP_SETTINGS_VENDOR_AUTOMATION),
+      controls =
+      {
+        {
+          type    = "description",
+          text    = GetString(PXIP_VENDOR_AUTOMATION_DESCRIPTION),
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_VENDOR_AUTOMATION_ENABLE),
+          tooltip = GetString(PXIP_SETTINGS_VENDOR_AUTOMATION_ENABLE_TOOLTIP),
+          getFunc = function() return self.savedVariables.enableVendorAutomation end,
+          setFunc = function(e) self.savedVariables.enableVendorAutomation = e; PXInfoPanelAddon:UpdateUI() end,
+          default = self.DefaultSettings.enableVendorAutomation,
+        },
+        {
+          type    = "slider",
+          name    = GetString(PXIP_VENDOR_AUTOMATION_INVENTORY_COUNT),
+          tooltip = GetString(PXIP_VENDOR_AUTOMATION_INVENTORY_COUNT_TOOLTIP),
+          min     = 0, max = 500, step = 1,
+          getFunc = function() return self.savedVariables.vendorAutomationInventoryCount end,
+          setFunc = function(value) self.savedVariables.vendorAutomationInventoryCount = value; PXInfoPanelAddon:UpdateUI() end,
+          width   = "full",
+          default = self.DefaultSettings.vendorAutomationInventoryCount,
+          disabled= function(e) return not self.savedVariables.enableVendorAutomation; end,
+        },
+        {
+          type    = "slider",
+          name    = GetString(PXIP_VENDOR_AUTOMATION_MAX_GOLD_LIMIT),
+          tooltip = GetString(PXIP_VENDOR_AUTOMATION_MAX_GOLD_LIMIT_TOOLTIP),
+          min     = 0, max = 100000, step = 1,
+          getFunc = function() return self.savedVariables.vendorAutomationMaxGold end,
+          setFunc = function(value) self.savedVariables.vendorAutomationMaxGold = value; PXInfoPanelAddon:UpdateUI() end,
+          width   = "full",
+          default = self.DefaultSettings.vendorAutomationMaxGold,
+          disabled= function(e) return not self.savedVariables.enableVendorAutomation; end,
+        },
+        {
+          type    = "slider",
+          name    = GetString(PXIP_VENDOR_AUTOMATION_MAX_UNIT_PRICE),
+          tooltip = GetString(PXIP_VENDOR_AUTOMATION_MAX_UNIT_PRICE_TOOLTIP),
+          min     = 0, max = 500, step = 1,
+          getFunc = function() return self.savedVariables.vendorAutomationMaxUnitPrice end,
+          setFunc = function(value) self.savedVariables.vendorAutomationMaxUnitPrice = value; PXInfoPanelAddon:UpdateUI() end,
+          width   = "full",
+          default = self.DefaultSettings.vendorAutomationMaxUnitPrice,
+          disabled= function(e) return not self.savedVariables.enableVendorAutomation; end,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_VENDOR_AUTOMATION_DEBUG),
+          getFunc = function() return self.savedVariables.enableVendorAutomationDebugging end,
+          setFunc = function(e) self.savedVariables.enableVendorAutomationDebugging = e; PXInfoPanelAddon:UpdateUI() end,
+          default = self.DefaultSettings.enableVendorAutomationDebugging,
+        },
+      },
+    },
+
+    --------------------------
+    -- Guildbank Automation --
+    --------------------------
+    {
+      type = "submenu",
+      name = GetString(PXIP_SETTINGS_GUILDBANK_AUTOMATION),
+      controls =
+      {
+        {
+          type    = "description",
+          text    = GetString(PXIP_GUILDBANK_AUTOMATION_DESCRIPTION),
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_GUILDBANK_AUTOMATION_ENABLE),
+          getFunc = function() return self.savedVariables.enableGuildbankAutomation end,
+          setFunc = function(e)
+            self.savedVariables.enableGuildbankAutomation = e;
+            PXInfoPanelAddon:UpdateUI()
+          end,
+          default = self.DefaultSettings.enableGuildbankAutomation,
+        },
+        {
+          type    = "editbox",
+          name    = GetString(PXIP_GUILDBANK_NAME),
+          getFunc = function() return self.savedVariables.guildbankName end,
+          setFunc = function(e) self.savedVariables.guildbankName = self:AdjustItemLink(e); self:UpdateUI(); end,
+          default = '',
+          disabled= function(e) return not self.savedVariables.enableGuildbankAutomation; end,
+        },
+        {
+          type    = "slider",
+          name    = GetString(PXIP_GUILDBANK_AUTOMATION_AMOUNT),
+          tooltip = GetString(PXIP_GUILDBANK_AUTOMATION_AMOUNT_DESCRIPTION),
+          min     = 0, max = 5000000, step = 1,
+          getFunc = function() return self.savedVariables.guildbankAutomationGoldOnCharacter end,
+          setFunc = function(value) self.savedVariables.guildbankAutomationGoldOnCharacter = value; PXInfoPanelAddon:UpdateUI() end,
+          width   = "full",
+          default = self.DefaultSettings.guildbankAutomationGoldOnCharacter,
+          disabled= function(e) return not self.savedVariables.enableGuildbankAutomation; end,
+        },
+      },
+    },
+
+    ---------
+    -- PVP --
+    ---------
     {
       type = "submenu",
       name = GetString(PXIP_SETTINGS_PVP),
@@ -344,6 +468,10 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
       },
     },
+
+    -----------------------
+    -- Monitor Inventory --
+    -----------------------
     {
       type = "submenu",
       name = GetString(PXIP_SETTINGS_MONITOR_INVENTORY),

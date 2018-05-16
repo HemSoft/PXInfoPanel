@@ -1,7 +1,7 @@
 ## Title: PhaeroX Info Panel
-## APIVersion: 100021 100022
+## APIVersion: 100022 100023
 ## Description: Show configurable information like achievement points, enlightened pool, and many other things.
-## Version: 0.0.28
+## Version: 1.0.0
 ## Author: |c33BBCCPhaeroX|r
 ## OptionalDependsOn: LibStub LibAddonMenu-2.0
 ## SavedVariables: PXInfoPanelSavedVariables

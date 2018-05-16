@@ -1,3 +1,35 @@
+V1.0.0
+- Addon now has its own GitHub repository at https://github.com/HemSoft/PXInfoPanel
+
+V0.0.35
+- Overhaul to the master writ tracking. The issues with sometimes thinking the provisioning writ being done when it is not, should be fixed now. Had a chance to clean up some unneeded code as well.
+
+V0.0.34
+- Fixed Vendor Automation not listening to the correct event. Also improved the debugging information to chat in order to troubleshoot if needed. Thanks Jurreq for reporting the issue.
+
+V0.0.33
+- API bump for Summerset.
+- Added a couple of specialized features:
+  - Vendor automation. This section is intended to automate the purchasing of style items such as Molybdenum, Bone, etc. and runes from the ESO ingame vendor. You set the amount you want of each in your inventory, the price per unit max, the max gold you want to spend in total per session, and the addon will take care of the rest. Let's say you want to always have 25 of each inventory. Then lets say you have 21 Molybdenum, this addon will buy 4 Molybdenum and move on to the next. It will not got above the set spending limits per visit. Use this with caution and at your own risk. This was made to avoid the tedious task of buying a couple hundred style materials manually. This feature is disabled by default.
+  - Guildbank automation. Here you can automate depositing or withdrawing money from a set guildbank. You set the money you want to have on your character, say 50k, and if you have above that on your character when you interact with the set guildbank, you will deposit the amount above 50k, and vice versa if you are below 50k, you will withdraw from the guild bank, up until you hold 50k on your character. This feature is disabled by default.
+
+V0.0.32
+- Brought back the dividerline that was taken out earlier, and made it optional to display it from the settings menu.
+
+V0.0.31
+- Now only showing achievement criterias that are not done when showing achievement progress that has multiple steps (criteria) that need to be completed.
+
+V0.0.30
+- Improved achievement tracking even more, by showing detailed progress in chat for each achievement criteria when an update occurs.
+
+V0.0.29
+- Improved the achievement tracking. When you make progress on achievements with more than one criteria, they will now be shown in the chat windows as well!
+- Removed the divider lines in the info panel window by popular request.
+
+V0.0.28
+- Dragon Bones version bump.
+- Fix for provisioning writs. Some (most) provisioning writs showed up as incomplete, although they were done.
+
 V0.0.27
 - API bump for Clockwork City.
 - Split some of the large settings functions into its own file. No effect to the end user.
