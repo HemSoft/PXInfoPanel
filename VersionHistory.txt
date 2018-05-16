@@ -1,5 +1,6 @@
 V1.0.0
 - Addon now has its own GitHub repository at https://github.com/HemSoft/PXInfoPanel
+- Fixed a logic issue with Guildbank Automation.
 
 V0.0.35
 - Overhaul to the master writ tracking. The issues with sometimes thinking the provisioning writ being done when it is not, should be fixed now. Had a chance to clean up some unneeded code as well.

@@ -168,6 +168,7 @@ function PXInfoPanelAddon:Initialize()
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1 = 0
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance2 = 0
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance3 = 0
+
   ------------
   -- EVENTS --
   ------------
@@ -418,26 +419,24 @@ function PXInfoPanelAddon:Initialize()
 
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEMS_READY,
     function(eventCode)
-      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == false) then
-        return
-      end
+      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true) then
+        local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
 
-      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+        if (guildName == PXInfoPanelAddon.savedVariables.mainGuildName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+          local guildBankedMoney = GetCurrencyAmount(CURT_MONEY, CURRENCY_LOCATION_GUILD_BANK)
+          local myMoney = GetCurrentMoney()
+          local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
 
-      if (guildName == PXInfoPanelAddon.savedVariables.mainGuildName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-        local guildBankedMoney = GetCurrencyAmount(CURT_MONEY, CURRENCY_LOCATION_GUILD_BANK)
-        local myMoney = GetCurrentMoney()
-        local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
-
-        if (amountOver > 0) then
-          d('PXIP -- Deposited ' .. amountOver .. ' gold into your guild as per specified settings.')
-          TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
+          if (amountOver > 0) then
+            d('PXIP -- Deposited ' .. amountOver .. ' gold into your guild as per specified settings.')
+            TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
+          end
+          if (amountOver < 0) then
+            d('PXIP -- Withdrew ' .. (amountOver * -1) .. ' gold from your guild as per specified settings.')
+            TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
+          end
+          PXInfoPanelAddon.GoldTransferToGuildComplete = false
         end
-        if (amountOver < 0) then
-          d('PXIP -- Withdrew ' .. (amountOver * -1) .. ' gold from your guild as per specified settings.')
-          TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
-        end
-        PXInfoPanelAddon.GoldTransferToGuildComplete = false
       end
     end
   )
