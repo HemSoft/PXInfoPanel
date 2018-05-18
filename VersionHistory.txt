@@ -1,3 +1,7 @@
+V1.0.1
+- Guild Automation now formats the money amount transferred.
+- Fixed another bug in the part of the code that determines if writs are done or not. Hopefully that is the last of the bugs that surfaced for Provisioning bugs!
+
 V1.0.0
 - Addon now has its own GitHub repository at https://github.com/HemSoft/PXInfoPanel
 - Fixed a logic issue with Guildbank Automation.

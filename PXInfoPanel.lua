@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.0",
+  Version = "1.0.1",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -428,12 +428,12 @@ function PXInfoPanelAddon:Initialize()
           local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
 
           if (amountOver > 0) then
-            d('PXIP -- Deposited ' .. amountOver .. ' gold into your guild as per specified settings.')
+            d('PXIP -- Deposited ' .. self:MoneyString(amountOver) .. ' gold into your guild as per specified settings.')
             TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
           end
           if (amountOver < 0) then
             d('PXIP -- Withdrew ' .. (amountOver * -1) .. ' gold from your guild as per specified settings.')
-            TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
+            TransferCurrency(CURT_MONEY, self:MoneyString(amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
           end
           PXInfoPanelAddon.GoldTransferToGuildComplete = false
         end
@@ -1199,9 +1199,9 @@ function PXInfoPanelAddon:UpdateWritStatus()
 
         local steps = GetJournalQuestNumSteps(questIndex)
         local writCompleted = false
-        for z = 1, steps do
-          local stepText, stepVisibility, stepType, stepTrackerOverrideText, conditions = GetJournalQuestStepInfo(questIndex, steps)
-          for zz = 1, conditions do
+        for z = 0, steps + 1 do
+          local stepText, stepVisibility, stepType, stepTrackerOverrideText, conditions = GetJournalQuestStepInfo(questIndex, z)
+          for zz = 0, conditions + 1 do
             conditionText, current, max, isFailCondition, isComplete, isCreditShared, isVisible = GetJournalQuestConditionInfo(questIndex, z, zz)
             local subText = string.sub(conditionText, 1, 7)
             if subText == GetString(PXIP_WRITS_DELIVER) then
