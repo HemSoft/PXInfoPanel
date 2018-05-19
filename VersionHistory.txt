@@ -1,3 +1,7 @@
+V1.0.2
+- Fixed Guild Automation bug.
+- Now marking partially completed writs yellow. Thanks to Jurreq for the request.
+
 V1.0.1
 - Guild Automation now formats the money amount transferred.
 - Fixed another bug in the part of the code that determines if writs are done or not. Hopefully that is the last of the bugs that surfaced for Provisioning bugs!
