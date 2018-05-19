@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.2",
+  Version = "1.0.3",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -375,14 +375,10 @@ function PXInfoPanelAddon:Initialize()
                   if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
                     d('PXVM -- Buying ' .. toBuy .. ' of ' .. name .. ' @' .. self:MoneyString(price) .. ' = ' .. self:MoneyString(toBuy * price))
                   end
-                  --BuyStoreItem(x, toBuy)
+                  BuyStoreItem(x, toBuy)
                   goldSpent = goldSpent + (toBuy * price)
                 else
                   if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
-                    --d('PXVM -- price = ' .. price)
-                    --d('PXVM -- PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice = ' .. PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice)
-                    --d('PXVM -- toBuy = ' .. toBuy)
-                    --d('PXVM -- name = ' .. name)
                     d('PXVM -- Price per unit ' .. price .. ' exceeds ' .. PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice .. '. Not buying ' .. toBuy .. ' of ' .. name .. ' @' .. self:MoneyString(price) .. ' = ' .. self:MoneyString(toBuy * price))
                   end
                 end
@@ -1321,8 +1317,6 @@ function PXInfoPanelAddon:UpdateUI()
     xpMade = GetUnitXP("player") - PXInfoPanelAddon.StartXP
   end
   local xpAMinute = self:Round((xpMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60 ,0)
-
-  --d('PXIP -- StartXP = ' .. PXInfoPanelAddon.StartXP .. ', CurrentXP = ' .. GetUnitXP('player') .. ', xpMade = ' .. xpMade .. ', xpAMinute = ' .. xpAMinute)
 
   local levelUpInMin = 0
   if (xpAMinute > 0) then

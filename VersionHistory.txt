@@ -1,3 +1,6 @@
+V1.0.3
+- Removed debugging information and re-enabled buying from Vendor. For some reason the code had reverted to having that line commented out.
+
 V1.0.2
 - Fixed Guild Automation bug.
 - Now marking partially completed writs yellow. Thanks to Jurreq for the request.
