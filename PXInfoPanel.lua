@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.4",
+  Version = "1.0.5",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -1236,7 +1236,6 @@ function PXInfoPanelAddon:UpdateWritStatus()
             PXInfoPanelAddon.WritStatus.Jewelry = true
             PXInfoPanelAddon.WritStatus.JewelryColor = PXInfoPanelAddon.ColorGreen
             PXInfoPanelAddon.WritStatus.JewelryPickedUp = true
-            d('PXIP -- journalInfo.QuestName = ' .. journalInfo.QuestName .. ', completedText = ' .. completedText)
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ALCHEMY_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.Alchemy = true
             PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorGreen
@@ -1288,6 +1287,7 @@ function PXInfoPanelAddon:UpdateWritStatus()
             end
           end
         end
+
         text = text .. journalInfo.QuestName .. " -- " .. completedText .. "\n"
         completedText = ""
       end

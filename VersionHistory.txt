@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+V1.0.5
+- Updated LibAddonMenu to latest version.
+
+>>>>>>> master
 V1.0.4
 - Support for Jewelry Crafting!
 - Fixed Guildbank Automation bug.
