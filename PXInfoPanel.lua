@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.0",
+  Version = "1.0.5",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -114,6 +114,7 @@ PXInfoPanelAddon = {
     enableVendorAutomationDebugging = false,
     enableGuildBankAutomation = false,
     guildbankAutomationGoldOnCharacter = 100000,
+    guildbankName = ''
   },
   MonitorMaterial = {
     { Name = GetString(PXIP_RAW_ANCESTOR_SILK),  RefinedName = GetString(PXIP_RAW_ANCESTOR_SILK_REFINED_NAME),  ShortName = GetString(PXIP_RAW_ANCESTOR_SILK_SHORT_NAME),  Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71200:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64504:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
@@ -133,6 +134,9 @@ PXInfoPanelAddon.WritStatus = {
   Woodworking = false,
   WoodworkingColor = PXInfoPanelAddon.ColorRed,
   WoodworkingPickedUp = false,
+  Jewelry = false,
+  JewelryColor = PXInfoPanelAddon.ColorRed,
+  JewelryPickedUp = false,
   Alchemy = false,
   AlchemyColor = PXInfoPanelAddon.ColorRed,
   AlchemyPickedUp = false,
@@ -168,6 +172,7 @@ function PXInfoPanelAddon:Initialize()
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance1 = 0
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance2 = 0
   PXInfoPanelAddon.PVPInfo.AlliancePointsToPreviousAlliance3 = 0
+
   ------------
   -- EVENTS --
   ------------
@@ -374,14 +379,10 @@ function PXInfoPanelAddon:Initialize()
                   if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
                     d('PXVM -- Buying ' .. toBuy .. ' of ' .. name .. ' @' .. self:MoneyString(price) .. ' = ' .. self:MoneyString(toBuy * price))
                   end
-                  --BuyStoreItem(x, toBuy)
+                  BuyStoreItem(x, toBuy)
                   goldSpent = goldSpent + (toBuy * price)
                 else
                   if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
-                    --d('PXVM -- price = ' .. price)
-                    --d('PXVM -- PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice = ' .. PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice)
-                    --d('PXVM -- toBuy = ' .. toBuy)
-                    --d('PXVM -- name = ' .. name)
                     d('PXVM -- Price per unit ' .. price .. ' exceeds ' .. PXInfoPanelAddon.savedVariables.vendorAutomationMaxUnitPrice .. '. Not buying ' .. toBuy .. ' of ' .. name .. ' @' .. self:MoneyString(price) .. ' = ' .. self:MoneyString(toBuy * price))
                   end
                 end
@@ -418,26 +419,24 @@ function PXInfoPanelAddon:Initialize()
 
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEMS_READY,
     function(eventCode)
-      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == false) then
-        return
-      end
+      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true) then
+        local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
 
-      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+        if (guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+          local guildBankedMoney = GetCurrencyAmount(CURT_MONEY, CURRENCY_LOCATION_GUILD_BANK)
+          local myMoney = GetCurrentMoney()
+          local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
 
-      if (guildName == PXInfoPanelAddon.savedVariables.mainGuildName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-        local guildBankedMoney = GetCurrencyAmount(CURT_MONEY, CURRENCY_LOCATION_GUILD_BANK)
-        local myMoney = GetCurrentMoney()
-        local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
-
-        if (amountOver > 0) then
-          d('PXIP -- Deposited ' .. amountOver .. ' gold into your guild as per specified settings.')
-          TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
+          if (amountOver > 0) then
+            d('PXIP -- Deposited ' .. self:MoneyString(amountOver) .. ' gold into your guild as per specified settings.')
+            TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
+          end
+          if (amountOver < 0) then
+            d('PXIP -- Withdrew ' .. self:MoneyString(amountOver * -1) .. ' gold from your guild as per specified settings.')
+            TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
+          end
+          PXInfoPanelAddon.GoldTransferToGuildComplete = false
         end
-        if (amountOver < 0) then
-          d('PXIP -- Withdrew ' .. (amountOver * -1) .. ' gold from your guild as per specified settings.')
-          TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
-        end
-        PXInfoPanelAddon.GoldTransferToGuildComplete = false
       end
     end
   )
@@ -1175,6 +1174,9 @@ function PXInfoPanelAddon:UpdateWritStatus()
   PXInfoPanelAddon.WritStatus.Woodworking = false
   PXInfoPanelAddon.WritStatus.WoodworkingColor = PXInfoPanelAddon.ColorRed 
   PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = false
+  PXInfoPanelAddon.WritStatus.Jewelry = false
+  PXInfoPanelAddon.WritStatus.JewelryColor = PXInfoPanelAddon.ColorRed 
+  PXInfoPanelAddon.WritStatus.JewelryPickedUp = false
   PXInfoPanelAddon.WritStatus.Alchemy = false
   PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorRed 
   PXInfoPanelAddon.WritStatus.AlchemyickedUp = false
@@ -1200,10 +1202,14 @@ function PXInfoPanelAddon:UpdateWritStatus()
 
         local steps = GetJournalQuestNumSteps(questIndex)
         local writCompleted = false
-        for z = 1, steps do
-          local stepText, stepVisibility, stepType, stepTrackerOverrideText, conditions = GetJournalQuestStepInfo(questIndex, steps)
-          for zz = 1, conditions do
+        local partiallyComplete = false
+        for z = 0, steps + 1 do
+          local stepText, stepVisibility, stepType, stepTrackerOverrideText, conditions = GetJournalQuestStepInfo(questIndex, z)
+          for zz = 0, conditions + 1 do
             conditionText, current, max, isFailCondition, isComplete, isCreditShared, isVisible = GetJournalQuestConditionInfo(questIndex, z, zz)
+            if (current > 0) then
+              partiallyComplete = true
+            end
             local subText = string.sub(conditionText, 1, 7)
             if subText == GetString(PXIP_WRITS_DELIVER) then
               writCompleted = true
@@ -1226,6 +1232,10 @@ function PXInfoPanelAddon:UpdateWritStatus()
             PXInfoPanelAddon.WritStatus.Woodworking = true
             PXInfoPanelAddon.WritStatus.WoodworkingColor = PXInfoPanelAddon.ColorGreen
             PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = true
+          elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_JEWELRY_SUBSTRING))) then
+            PXInfoPanelAddon.WritStatus.Jewelry = true
+            PXInfoPanelAddon.WritStatus.JewelryColor = PXInfoPanelAddon.ColorGreen
+            PXInfoPanelAddon.WritStatus.JewelryPickedUp = true
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ALCHEMY_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.Alchemy = true
             PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorGreen
@@ -1242,18 +1252,42 @@ function PXInfoPanelAddon:UpdateWritStatus()
         else
           if (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_BLACKSMITHING_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.BlackSmithingPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.BlackSmithingColor = PXInfoPanelAddon.ColorGold
+            end
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_CLOTHING_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.ClothingPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.ClothingColor = PXInfoPanelAddon.ColorGold
+            end
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_WOODWORKING_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.WoodworkingPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.WoodworkingColor = PXInfoPanelAddon.ColorGold
+            end
+          elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_JEWELRY_SUBSTRING))) then
+            PXInfoPanelAddon.WritStatus.JewelryPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.JewelryColor = PXInfoPanelAddon.ColorGold
+            end
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ALCHEMY_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.AlchemyPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.AlchemyColor = PXInfoPanelAddon.ColorGold
+            end
           elseif (string.match(journalInfo.QuestName, GetString(PXIP_WRITS_ENCHANTING_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.EnchantingPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.EnchantingColor = PXInfoPanelAddon.ColorGold
+            end
           elseif(string.match(journalInfo.QuestName, GetString(PXIP_WRITS_PROVISIONING_SUBSTRING))) then
             PXInfoPanelAddon.WritStatus.ProvisioningPickedUp = true
+            if (partiallyComplete == true) then
+              PXInfoPanelAddon.WritStatus.ProvisioningColor = PXInfoPanelAddon.ColorGold
+            end
           end
         end
+
         text = text .. journalInfo.QuestName .. " -- " .. completedText .. "\n"
         completedText = ""
       end
@@ -1300,8 +1334,6 @@ function PXInfoPanelAddon:UpdateUI()
     xpMade = GetUnitXP("player") - PXInfoPanelAddon.StartXP
   end
   local xpAMinute = self:Round((xpMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60 ,0)
-
-  --d('PXIP -- StartXP = ' .. PXInfoPanelAddon.StartXP .. ', CurrentXP = ' .. GetUnitXP('player') .. ', xpMade = ' .. xpMade .. ', xpAMinute = ' .. xpAMinute)
 
   local levelUpInMin = 0
   if (xpAMinute > 0) then
@@ -1509,6 +1541,9 @@ function PXInfoPanelAddon:UpdateUI()
       if (PXInfoPanelAddon.WritStatus.WoodworkingPickedUp) then
         text = text .. PXInfoPanelAddon.WritStatus.WoodworkingColor .. GetString(PXIP_WOODWORKING_LETTER)
       end
+      if (PXInfoPanelAddon.WritStatus.JewelryPickedUp) then
+        text = text .. PXInfoPanelAddon.WritStatus.JewelryColor .. GetString(PXIP_JEWELRY_LETTER)
+      end
       if (PXInfoPanelAddon.WritStatus.AlchemyPickedUp) then
         text = text .. PXInfoPanelAddon.WritStatus.AlchemyColor .. GetString(PXIP_ALCHEMY_LETTER)
       end
@@ -1523,7 +1558,7 @@ function PXInfoPanelAddon:UpdateUI()
     end
 
     -- Notify on all writs done:
-    if (self.savedVariables.allWritsDoneNotified == false and PXInfoPanelAddon.WritStatus.BlackSmithing and PXInfoPanelAddon.WritStatus.Clothing and PXInfoPanelAddon.WritStatus.Woodworking and PXInfoPanelAddon.WritStatus.Alchemy and PXInfoPanelAddon.WritStatus.Enchanting and PXInfoPanelAddon.WritStatus.Provisioning) then
+    if (self.savedVariables.allWritsDoneNotified == false and PXInfoPanelAddon.WritStatus.BlackSmithing and PXInfoPanelAddon.WritStatus.Clothing and PXInfoPanelAddon.WritStatus.Woodworking and PXInfoPanelAddon.WritStatus.Jewelry and PXInfoPanelAddon.WritStatus.Alchemy and PXInfoPanelAddon.WritStatus.Enchanting and PXInfoPanelAddon.WritStatus.Provisioning) then
       local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
       params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
       params:SetText(PXInfoPanelAddon.ColorGreen .. GetString(PXIP_WRITS_ALL_WRITS_DONE) .. PXInfoPanelAddon.ColorGold .. GetString(PXIP_WRITS_TIME_TO_TURN_THEM_IN))

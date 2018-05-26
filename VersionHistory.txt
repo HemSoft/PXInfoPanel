@@ -1,5 +1,24 @@
+V1.0.5
+- Updated LibAddonMenu to latest version.
+
+V1.0.4
+- Support for Jewelry Crafting!
+- Fixed Guildbank Automation bug.
+
+V1.0.3
+- Removed debugging information and re-enabled buying from Vendor. For some reason the code had reverted to having that line commented out.
+
+V1.0.2
+- Fixed Guild Automation bug.
+- Now marking partially completed writs yellow. Thanks to Jurreq for the request.
+
+V1.0.1
+- Guild Automation now formats the money amount transferred.
+- Fixed another bug in the part of the code that determines if writs are done or not. Hopefully that is the last of the bugs that surfaced for Provisioning bugs!
+
 V1.0.0
 - Addon now has its own GitHub repository at https://github.com/HemSoft/PXInfoPanel
+- Fixed a logic issue with Guildbank Automation.
 
 V0.0.35
 - Overhaul to the master writ tracking. The issues with sometimes thinking the provisioning writ being done when it is not, should be fixed now. Had a chance to clean up some unneeded code as well.

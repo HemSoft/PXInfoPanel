@@ -163,6 +163,10 @@ local strings = {
   PXIP_GUILDBANK_NAME                                = "Name of guildbank to enable automation for:",
   PXIP_GUILDBANK_AUTOMATION_AMOUNT                   = "Amount of gold to have on character:",
   PXIP_GUILDBANK_AUTOMATION_AMOUNT_DESCRIPTION       = "The amount of gold you want to have on your character.",
+
+  -- V1.0.4 -- New strings:
+  PXIP_WRITS_JEWELRY_SUBSTRING                       = "Jewelry",
+  PXIP_JEWELRY_LETTER                                = "J|r",
 }
 
 for stringId, stringValue in pairs(strings) do

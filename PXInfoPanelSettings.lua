@@ -411,7 +411,7 @@ function PXInfoPanelAddon:CreateSettingsWindow()
           type    = "editbox",
           name    = GetString(PXIP_GUILDBANK_NAME),
           getFunc = function() return self.savedVariables.guildbankName end,
-          setFunc = function(e) self.savedVariables.guildbankName = self:AdjustItemLink(e); self:UpdateUI(); end,
+          setFunc = function(e) self.savedVariables.guildbankName = e; self:UpdateUI(); end,
           default = '',
           disabled= function(e) return not self.savedVariables.enableGuildbankAutomation; end,
         },
