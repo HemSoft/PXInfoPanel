@@ -2,19 +2,19 @@
 local strings = {
   PXIP_RAW_ANCESTOR_SILK                             = "raw ancestor silk",
   PXIP_RAW_ANCESTOR_SILK_REFINED_NAME                = "Ancestor Silk",
-  PXIP_RAW_ANCESTOR_SILK_SHORT_NAME                  = "Silk",
+  PXIP_RAW_ANCESTOR_SILK_SHORT_NAME                  = "S",
   
   PXIP_RUBEDITE_ORE                                  = "rubedite ore",
   PXIP_RUBEDITE_ORE_REFINED_NAME                     = "Rubedite Ingot",
-  PXIP_RUBEDITE_ORE_SHORT_NAME                       = "Ingot",
+  PXIP_RUBEDITE_ORE_SHORT_NAME                       = "I",
   
   PXIP_ROUGH_RUBY_ASH                                = "rough ruby ash",
   PXIP_ROUGH_RUBY_ASH_REFINED_NAME                   = "Sanded Ruby Ash",
-  PXIP_ROUGH_RUBY_ASH_SHORT_NAME                     = "Ash",
+  PXIP_ROUGH_RUBY_ASH_SHORT_NAME                     = "A",
 
   PXIP_RUBEDO_HIDE_SCRAPS                            = "rubedo hide scraps",
   PXIP_RUBEDO_HIDE_SCRAPS_REFINED_NAME               = "Rubedo Leather",
-  PXIP_RUBEDO_HIDE_SCRAPS_SHORT_NAME                 = "Leather",
+  PXIP_RUBEDO_HIDE_SCRAPS_SHORT_NAME                 = "L",
 
   PXIP_SETTINGS_DISPLAY_NAME                         = "PhaeroX Info Panel",
   PXIP_SETTINGS_AUTHOR                               = "|c28b712PhaeroX|r",
@@ -166,6 +166,23 @@ local strings = {
 
   -- V1.0.4 -- New strings:
   PXIP_WRITS_JEWELRY_SUBSTRING                       = "Jewelry",
+  PXIP_JEWELRY_LETTER                                = "J|r",
+
+  -- V1.0.6 -- New strings:
+  PXIP_PLATINUM_DUST                                 = "Platinum Dust",
+  PXIP_PLATINUM_OUNCE                                = "Platinum Ounce",
+  PXIP_PLATINUM_SHORT_NAME                           = "P",
+  PXIP_SETTINGS_MONITOR_RESEARCH                     = "Monitor Research",
+  PXIP_SETTINGS_MONITOR_RESEARCH_DESCRIPTION         = "Monitor how much time is left on researching individual crafting skill lines.",
+  PXIP_SETTINGS_MONITOR_RESEARCH_ENABLE              = "Enable research monitoring",
+  PXIP_SETTINGS_BLACKSMITHING                        = "Blacksmithing",
+  PXIP_SETTINGS_CLOTHING                             = "Clothing",
+  PXIP_SETTINGS_WOODWORKING                          = "Woodworking",
+  PXIP_SETTINGS_ALCHEMY                              = "Alchemy",
+  PXIP_SETTINGS_ENCHANTING                           = "Enchanting",
+  PXIP_SETTINGS_PROVISIONING                         = "Provisioning",
+  PXIP_SETTINGS_JEWELRY                              = "Jewelry",
+  PXIP_SETTINGS_RESEARCH_SHOW_CONDENSED              = "Show research times in condensed one line format",
   PXIP_JEWELRY_LETTER                                = "J|r",
 }
 

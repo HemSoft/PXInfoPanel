@@ -1,3 +1,7 @@
+V1.0.6
+- Added a new feature to monitor your research including the new Jewelry crafting line. Look for the new Monitor Research section under settings.
+- Removed BiS loot notification as it is not current and longer accurate.
+
 V1.0.5
 - Updated LibAddonMenu to latest version.
 

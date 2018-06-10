@@ -305,14 +305,6 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
         {
           type    = "checkbox",
-          name    = GetString(PXIP_SETTINGS_SHOW_BIS_LOOT_NOTIFICATIONS),
-          tooltip = GetString(PXIP_SETTINGS_SHOW_BIS_LOOT_NOTIFICATIONS_TOOLTIP),
-          getFunc = function() return self.savedVariables.showBiSLootNotifications end,
-          setFunc = function(e) self.savedVariables.showBiSLootNotifications = e; PXInfoPanelAddon:UpdateUI() end,
-          default = true,
-        },
-        {
-          type    = "checkbox",
           name    = GetString(PXIP_SETTINGS_SHOW_ACHIEVEMENT_PROGRESS_IN_CHAT),
           tooltip = GetString(PXIP_SETTINGS_SHOW_ACHIEVEMENT_PROGRESS_IN_CHAT),
           getFunc = function() return self.savedVariables.showAchievementProgressInChat end,
@@ -425,6 +417,71 @@ function PXInfoPanelAddon:CreateSettingsWindow()
           width   = "full",
           default = self.DefaultSettings.guildbankAutomationGoldOnCharacter,
           disabled= function(e) return not self.savedVariables.enableGuildbankAutomation; end,
+        },
+      },
+    },
+
+    -------------------------
+    -- Monitoring Research --
+    -------------------------
+    {
+      type = "submenu",
+      name = GetString(PXIP_SETTINGS_MONITOR_RESEARCH),
+      controls =
+      {
+        {
+          type    = "description",
+          text    = GetString(PXIP_SETTINGS_MONITOR_RESEARCH_DESCRIPTION),
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_MONITOR_RESEARCH_ENABLE),
+          getFunc = function() return self.savedVariables.enableMonitorResearch end,
+          setFunc = function(e)
+            self.savedVariables.enableMonitorResearch = e;
+            PXInfoPanelAddon:UpdateUI()
+          end,
+          default = self.DefaultSettings.enableGuildbankAutomation,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_CLOTHING),
+          getFunc = function() return self.savedVariables.enableMonitorResearchClothing end,
+          setFunc = function(e) self.savedVariables.enableMonitorResearchClothing = e; self:UpdateUI(); end,
+          default = false,
+          disabled= function(e) return not self.savedVariables.enableMonitorResearch; end,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_BLACKSMITHING),
+          getFunc = function() return self.savedVariables.enableMonitorResearchBlacksmithing end,
+          setFunc = function(e) self.savedVariables.enableMonitorResearchBlacksmithing = e; self:UpdateUI(); end,
+          default = false,
+          disabled= function(e) return not self.savedVariables.enableMonitorResearch; end,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_WOODWORKING),
+          getFunc = function() return self.savedVariables.enableMonitorResearchWoodworking end,
+          setFunc = function(e) self.savedVariables.enableMonitorResearchWoodworking = e; self:UpdateUI(); end,
+          default = false,
+          disabled= function(e) return not self.savedVariables.enableMonitorResearch; end,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_JEWELRY),
+          getFunc = function() return self.savedVariables.enableMonitorResearchJewelry end,
+          setFunc = function(e) self.savedVariables.enableMonitorResearchJewelry = e; self:UpdateUI(); end,
+          default = false,
+          disabled= function(e) return not self.savedVariables.enableMonitorResearch; end,
+        },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_RESEARCH_SHOW_CONDENSED),
+          getFunc = function() return self.savedVariables.enableMonitorResearchShowCondensed end,
+          setFunc = function(e) self.savedVariables.enableMonitorResearchShowCondensed = e; self:UpdateUI(); end,
+          default = false,
+          disabled= function(e) return not self.savedVariables.enableMonitorResearch; end,
         },
       },
     },
@@ -835,5 +892,74 @@ function PXInfoPanelAddon:CheckDefaultSettingsAreApplied()
   end
   if (self.savedVariables.showAchievementProgressInChat == nil) then
     self.savedVariables.showAchievementProgressInChat = self.DefaultSettings.showAchievementProgressInChat
+  end
+  if (self.savedVariables.customMonitor1 == nil) then
+    self.savedVariables.customMonitor1 = self.DefaultSettings.customMonitor1
+  end
+  if (self.savedVariables.customMonitor2 == nil) then
+    self.savedVariables.customMonitor2 = self.DefaultSettings.customMonitor2
+  end
+  if (self.savedVariables.customMonitor3 == nil) then
+    self.savedVariables.customMonitor3 = self.DefaultSettings.customMonitor3
+  end
+  if (self.savedVariables.customMonitor4 == nil) then
+    self.savedVariables.customMonitor4 = self.DefaultSettings.customMonitor4
+  end
+  if (self.savedVariables.customMonitor5 == nil) then
+    self.savedVariables.customMonitor5 = self.DefaultSettings.customMonitor5
+  end
+  if (self.savedVariables.customMonitor6 == nil) then
+    self.savedVariables.customMonitor6 = self.DefaultSettings.customMonitor6
+  end
+  if (self.savedVariables.customMonitor7 == nil) then
+    self.savedVariables.customMonitor7 = self.DefaultSettings.customMonitor7
+  end
+  if (self.savedVariables.customMonitor8 == nil) then
+    self.savedVariables.customMonitor8 = self.DefaultSettings.customMonitor8
+  end
+  if (self.savedVariables.customMonitor9 == nil) then
+    self.savedVariables.customMonitor9 = self.DefaultSettings.customMonitor9
+  end
+  if (self.savedVariables.customMonitor10 == nil) then
+    self.savedVariables.customMonitor10 = self.DefaultSettings.customMonitor10
+  end
+  if (self.savedVariables.enableVendorAutomation == nil) then
+    self.savedVariables.enableVendorAutomation = self.DefaultSettings.enableVendorAutomation
+  end
+  if (self.savedVariables.vendorAutomationMaxGold == nil) then
+    self.savedVariables.vendorAutomationMaxGold = self.DefaultSettings.vendorAutomationMaxGold
+  end
+  if (self.savedVariables.vendorAutomationInventoryCount == nil) then
+    self.savedVariables.vendorAutomationInventoryCount = self.DefaultSettings.vendorAutomationInventoryCount
+  end
+  if (self.savedVariables.enableVendorAutomationDebugging == nil) then
+    self.savedVariables.enableVendorAutomationDebugging = self.DefaultSettings.enableVendorAutomationDebugging
+  end
+  if (self.savedVariables.enableGuildBankAutomation == nil) then
+    self.savedVariables.enableGuildBankAutomation = self.DefaultSettings.enableGuildBankAutomation
+  end
+  if (self.savedVariables.guildbankAutomationGoldOnCharacter == nil) then
+    self.savedVariables.guildbankAutomationGoldOnCharacter = self.DefaultSettings.guildbankAutomationGoldOnCharacter
+  end
+  if (self.savedVariables.guildbankName == nil) then
+    self.savedVariables.guildbankName = self.DefaultSettings.guildbankName
+  end
+  if (self.savedVariables.enableMonitorResearch == nil) then
+    self.savedVariables.enableMonitorResearch = self.DefaultSettings.enableMonitorResearch
+  end
+  if (self.savedVariables.enableMonitorResearchBlacksmithing == nil) then
+    self.savedVariables.enableMonitorResearchBlacksmithing = self.DefaultSettings.enableMonitorResearchBlacksmithing
+  end
+  if (self.savedVariables.enableMonitorResearchClothing == nil) then
+    self.savedVariables.enableMonitorResearchClothing = self.DefaultSettings.enableMonitorResearchClothing
+  end
+  if (self.savedVariables.enableMonitorResearchWoodworking == nil) then
+    self.savedVariables.enableMonitorResearchWoodworking = self.DefaultSettings.enableMonitorResearchWoodworking
+  end
+  if (self.savedVariables.enableMonitorResearchJewelry == nil) then
+    self.savedVariables.enableMonitorResearchJewelry = self.DefaultSettings.enableMonitorResearchJewelry
+  end
+  if (self.savedVariables.enableMonitorResearchShowCondensed == nil) then
+    self.savedVariables.enableMonitorResearchShowCondensed = self.DefaultSettings.enableMonitorResearchShowCondensed
   end
 end

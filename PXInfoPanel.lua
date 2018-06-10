@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.5",
+  Version = "1.0.6",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -92,7 +92,6 @@ PXInfoPanelAddon = {
     showWritStatusCondensed = true,
     showLevelProgress = true,
     showGrindStatus = true,
-    showBiSLootNotifications = true,
     hideInfoPanelWhenViewInventory = false,
     showGroupLoot = false,
     lastLootLines = 1,
@@ -114,13 +113,23 @@ PXInfoPanelAddon = {
     enableVendorAutomationDebugging = false,
     enableGuildBankAutomation = false,
     guildbankAutomationGoldOnCharacter = 100000,
-    guildbankName = ''
+    guildbankName = '',
+    enableMonitorResearch = false,
+    enableMonitorResearchBlacksmithing = false,
+    enableMonitorResearchClothing = false,
+    enableMonitorResearchWoodworking = false,
+    enableMonitorResearchAlchemy = false,
+    enableMonitorResearchEnchanting = false,
+    enableMonitorResearchProvisioning = false,
+    enableMonitorResearchJewelry = false,
+    enableMonitorResearchShowCondensed = false,
   },
   MonitorMaterial = {
     { Name = GetString(PXIP_RAW_ANCESTOR_SILK),  RefinedName = GetString(PXIP_RAW_ANCESTOR_SILK_REFINED_NAME),  ShortName = GetString(PXIP_RAW_ANCESTOR_SILK_SHORT_NAME),  Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71200:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64504:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
     { Name = GetString(PXIP_RUBEDITE_ORE),       RefinedName = GetString(PXIP_RUBEDITE_ORE_REFINED_NAME),       ShortName = GetString(PXIP_RUBEDITE_ORE_SHORT_NAME),       Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71198:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64489:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
     { Name = GetString(PXIP_ROUGH_RUBY_ASH),     RefinedName = GetString(PXIP_ROUGH_RUBY_ASH_REFINED_NAME),     ShortName = GetString(PXIP_ROUGH_RUBY_ASH_SHORT_NAME),     Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71199:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', RefinedLink = '|H0:item:64502:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
     { Name = GetString(PXIP_RUBEDO_HIDE_SCRAPS), RefinedName = GetString(PXIP_RUBEDO_HIDE_SCRAPS_REFINED_NAME), ShortName = GetString(PXIP_RUBEDO_HIDE_SCRAPS_SHORT_NAME), Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71239:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64506:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
+    { Name = GetString(PXIP_PLATINUM),           RefinedName = GetString(PXIP_PLATINUM_OUNCE),                  ShortName = GetString(PXIP_PLATINUM_SHORT_NAME),           Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:135145:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', RefinedLink = '|H0:item:135146:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
   },
 }
 
@@ -671,9 +680,7 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
   local tPrice = quantity * mPrice
   local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
   local totalStackSize = stackCountBackpack + stackCountBank + stackCountCraftBag
-
   local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
-
   local itemType, specializedItemType = GetItemLinkItemType(itemLink)
 
   local knownText = ''
@@ -751,97 +758,6 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
       text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] (<<5>>) <<6>><<7>>", quantity, itemIconText, itemLink, traitName, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
     else
       text = zo_strformat("<<1>> x <<2>><<3>> (<<4>>) <<5>><<6>>", quantity, itemIconText, itemLink, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
-    end
-  end
-
-  if (PXInfoPanelAddon.savedVariables.showBiSLootNotifications == true and requiredChampionPoints >= 150 and itemLinkQuality > ITEM_QUALITY_MAGIC and hasSet == true) then
-    ------------------------------------------------------------------ ARMOR ------------------------------------------------------------------
-    if (itemType == ITEMTYPE_ARMOR) then
-      ------------------------------------------------------------------ DIVINE -----------------------------------------------------------------
-      if (traitType == ITEM_TRAIT_TYPE_ARMOR_DIVINES) then
-        if (armorType == ARMORTYPE_LIGHT) then
-          if (equipTypeLarge == true) then
-            notifyText = looterName .. ' picked up BiS Magicka DPS set piece -- ' .. setName
-            d('PXInfoPanel: ' .. notifyText)
-          else
-            d('PXInfoPanel: ' .. text)
-            notifyText = looterName .. ' picked up BiS Magicka DPS/Healer set piece -- ' .. setName
-          end
-        end
-        if (armorType == ARMORTYPE_MEDIUM) then
-          notifyText = looterName .. ' picked up BiS Stamina DPS set piece -- ' .. setName
-          d('PXInfoPanel: ' .. notifyText)
-        end
-      ------------------------------------------------------------------ INFUSED -----------------------------------------------------------------
-      elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_INFUSED) then
-        if (armorType == ARMORTYPE_LIGHT) then
-          if (equipTypeLarge == true) then
-            d('PXInfoPanel: ' .. text)
-            notifyText = looterName .. ' picked up BiS Healer set piece -- ' .. setName
-          end
-        elseif (armorType == ARMORTYPE_HEAVY) then
-          if (equipTypeLarge == true) then
-            d('PXInfoPanel: ' .. text)
-            notifyText = looterName .. ' picked up BiS Tank set piece -- ' .. setName
-          end
-        end
-      ------------------------------------------------------------------ STURDY  -----------------------------------------------------------------
-      elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_STURDY) then
-        if (armorType == ARMORTYPE_HEAVY) then
-          if (equipTypeLarge == false) then
-            d('PXInfoPanel: ' .. text)
-            notifyText = looterName .. ' picked up BiS Tank set piece -- ' .. setName
-          end
-        end
-      end
-    ------------------------------------------------------------------ WEAPON ------------------------------------------------------------------
-    elseif (itemType == ITEMTYPE_WEAPON) then
-      --------------------------------------------------------------- SHARPENED ----------------------------------------------------------------
-      if (traitType == ITEM_TRAIT_TYPE_ARMOR_SHARPENED) then
-        if (weaponType == WEAPON_TYPE_AXE or weaponType == WEAPON_TYPE_DAGGER or weaponType == WEAPON_TYPE_BOW or weaponType == WEAPON_TYPE_FIRE_STAFF or weaponType == WEAPON_TYPE_FROST_STAFF or weaponType == WEAPON_TYPE_LIGHTNING_STAFF or weaponType == WEAPON_TYPE_TWO_HANDED_AXE or weaponType == WEAPON_TYPE_TWO_HANDED_SWORD) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS DPS weapon set piece -- ' .. setName
-        end
-      elseif (weaponType == WEAPON_TYPE_DAGGER) then
-        if (traitType == ITEM_TRAIT_TYPE_ARMOR_INFUSED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS DPS or Tank weapon set piece -- ' .. setName
-        elseif (traitType == ITEM_TRAIT_TYPE_ARMOR_DECISIVE) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS Tank weapon set piece -- ' .. setName
-        end
-      elseif (weaponType == WEAPON_TYPE_BOW) then
-        if (traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS Stamina Bow set piece -- ' .. setName
-        end
-      elseif (weaponType == WEAPON_TYPE_FIRE_STAFF or weaponType == WEAPON_TYPE_FROST_STAFF or weaponType == WEAPON_TYPE_LIGHTNING_STAFF) then
-        if (traitType == ITEM_TRAIT_TYPE_ARMOR_SHARPENED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS Magicka DPS Destro staff set piece -- ' .. setName
-        end
-      elseif (weaponType == WEAPON_TYPE_HEALING_STAFF) then
-        if (traitType == ITEM_TRAIT_TYPE_ARMOR_POWERED or traitType == ITEM_TRAIT_TYPE_ARMOR_PRECISE or traitType == ITEM_TRAIT_TYPE_ARMOR_DECISIVE) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS Healing staff set piece -- ' .. setName
-        end
-      elseif (weaponType == WEAPON_TYPE_SHIELD) then
-        if (traitType == ITEM_TRAIT_TYPE_ARMOR_STURDY or traitType == ITEM_TRAIT_TYPE_ARMOR_REINFORCED) then
-          d('PXInfoPanel: ' .. text)
-          notifyText = looterName .. ' picked up BiS Tank Shield set piece -- ' .. setName
-        end
-      end
-    end
-
-    if (notifyText ~= '' and playerName ~= looterName and PXInfoPanelAddon.savedVariables.showGroupLoot == true) then
-      notifyText = notifyText .. ' (' .. looterName .. ')'
-    end
-
-    if (notifyText ~= '') then
-      local params = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.ACHIEVEMENT_AWARDED)
-      params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_ACHIEVEMENT_AWARDED)
-      params:SetText(notifyText)
-      CENTER_SCREEN_ANNOUNCE:AddMessageWithParams(params)
     end
   end
 
@@ -1567,7 +1483,150 @@ function PXInfoPanelAddon:UpdateUI()
     end
   end
 
+  text = text .. self:MonitorResearch()
   self:WriteLog(text)
+end
+
+function PXInfoPanelAddon:MonitorResearch()
+  local text = ''
+  local char = '\n'
+  if (self.savedVariables.enableMonitorResearchBlacksmithing) then
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. self:CheckResearch(char, CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
+    else
+      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
+    end
+    if (text ~= '') then
+      char = ','
+    end
+  end
+  if (self.savedVariables.enableMonitorResearchClothing) then
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. self:CheckResearch(char, CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
+    else
+      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
+    end
+    if (text ~= '') then
+      char = ','
+    end
+  end
+  if (self.savedVariables.enableMonitorResearchWoodworking) then
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. self:CheckResearch(char, CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
+    else
+      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
+    end
+    if (text ~= '') then
+      char = ','
+    end
+  end
+  if (self.savedVariables.enableMonitorResearchJewelry) then
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. self:CheckResearch(char, CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
+    else
+      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
+    end
+    if (text ~= '') then
+      char = ','
+    end
+  end
+
+  return text
+end
+
+function PXInfoPanelAddon:CheckResearch(newLine, craftingTraitType, name)
+  local text = ''
+  local found = false
+  local allknown = true
+
+  local craftingLines = GetNumSmithingResearchLines(craftingTraitType)
+  local maxLines =  GetMaxSimultaneousSmithingResearch(craftingTraitType)
+  local shortestResearchTimeInLine = 60 * 60 * 24 * 30 * 12
+  local traitName = ''
+  local ttype = ''
+
+  -- Check to see if all traits are known for this crafting type:
+  for x = 1, craftingLines do
+    local lineInfoName, icon, numTraits, timeRequiredForNextResearchSecs = GetSmithingResearchLineInfo(craftingTraitType, x)
+    for trait = 1, numTraits do
+      local traitType, traitDescription, known = GetSmithingResearchLineTraitInfo(craftingTraitType, x, trait)
+      if (known == false) then
+        allknown = false
+      end
+
+      local duration, timeRemainingSecs = GetSmithingResearchLineTraitTimes(craftingTraitType, x, trait)
+      if (timeRemainingSecs ~= nil and timeRemainingSecs > 0) then
+        if (timeRemainingSecs < shortestResearchTimeInLine) then
+          ttype, traitName = GetSmithingTraitItemInfo(traitItemIndex)
+          shortestResearchTimeInLine = timeRemainingSecs
+          found = true
+        end
+      end
+    end
+  end
+
+  if (allknown) then
+    return ''
+  end
+
+  if (found == false) then
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. newLine .. PXInfoPanelAddon.ColorRed .. name .. ': -'
+    else
+      text = text .. newLine .. PXInfoPanelAddon.ColorRed .. name .. ': No research active.'
+    end
+  else
+    if (self.savedVariables.enableMonitorResearchShowCondensed) then
+      text = text .. newLine .. name .. ': ' .. PXInfoPanelAddon:SecondsToClock(shortestResearchTimeInLine)
+    else
+      text = text .. newLine .. name .. ' ' .. traitName .. ', Time Left: ' .. self:FormatSeconds(shortestResearchTimeInLine)
+    end
+  end
+
+  return text
+end
+
+function PXInfoPanelAddon:SecondsToClock(seconds)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then
+    return "00:00:00";
+  else
+    hours = string.format("%02.f", math.floor(seconds / 3600));
+    mins = string.format("%02.f", math.floor(seconds / 60 - (hours * 60)));
+    secs = string.format("%02.f", math.floor(seconds - hours * 3600 - mins * 60));
+    return hours..":"..mins..":"..secs
+  end
+end
+
+function PXInfoPanelAddon:FormatSeconds(secondsArg)
+   local weeks = math.floor(secondsArg / 604800)
+   local remainder = secondsArg % 604800
+   local days = math.floor(remainder / 86400)
+   local remainder = remainder % 86400
+   local hours = math.floor(remainder / 3600)
+   local remainder = remainder % 3600
+   local minutes = math.floor(remainder / 60)
+   local seconds = remainder % 60
+   
+   local weeksTxt, daysTxt, hoursTxt, minutesTxt, secondsTxt = ""
+   if weeks == 1 then weeksTxt = 'week' else weeksTxt = 'weeks' end
+   if days == 1 then daysTxt = 'day' else daysTxt = 'days' end
+   if hours == 1 then hoursTxt = 'hour' else hoursTxt = 'hours' end
+   if minutes == 1 then minutesTxt = 'minute' else minutesTxt = 'minutes' end
+   if seconds == 1 then secondsTxt = 'second' else secondsTxt = 'seconds' end
+   
+   if secondsArg >= 604800 then
+      return weeks .. ' ' .. weeksTxt .. ', ' .. days .. ' ' .. daysTxt .. ', ' .. hours .. ' ' .. hoursTxt .. ', ' .. minutes .. ' ' .. minutesTxt .. ', ' .. seconds .. ' ' .. secondsTxt
+   elseif secondsArg >= 86400 then
+      return days .. ' ' .. daysTxt .. ', ' .. hours .. ' ' .. hoursTxt .. ', ' .. minutes .. ' ' .. minutesTxt .. ', ' .. seconds .. ' ' .. secondsTxt
+   elseif secondsArg >= 3600 then
+      return hours .. ' ' .. hoursTxt .. ', ' .. minutes .. ' ' .. minutesTxt .. ', ' .. seconds .. ' ' .. secondsTxt
+   elseif secondsArg >= 60 then
+      return minutes .. ' ' .. minutesTxt .. ', ' .. seconds .. ' ' .. secondsTxt
+   else
+      return seconds  ..  ' '  ..  secondsTxt
+   end  
 end
 
 function PXInfoPanelAddon:ShowPVPInformation(text, newLine)
