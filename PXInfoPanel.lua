@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.6",
+  Version = "1.0.7",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -156,6 +156,22 @@ PXInfoPanelAddon.WritStatus = {
   ProvisioningColor = PXInfoPanelAddon.ColorRed,
   ProvisioningPickedUp = false,
 }
+
+PXInfoPanelAddon.ResearchInfoDetail = {
+  AllKnown = true,
+  SecondsRemaining = 0,
+  TimeStringShort = '',
+  TimeStringLong = '',
+  LinesCurrentlyResearching = 0,
+  LinesMaxResearchable = 0,
+  TimeStamp = 0
+}
+
+PXIP = {}
+PXIP.BI = {}
+PXIP.CI = {}
+PXIP.WI = {}
+PXIP.JI = {}
 
 PXInfoPanelAddon.savedVariables = PXInfoPanelAddon.DefaultSettings
 
@@ -533,6 +549,30 @@ function PXInfoPanelAddon:Initialize()
     end
   )
 
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_CANCELED,
+    function(eventCode, craftingSkillType, researchLineIndex, traitIndex)
+      PXInfoPanelAddon:CalculateResearchAll()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_COMPLETED,
+    function(eventCode, craftingSkillType, researchLineIndex, traitIndex)
+      PXInfoPanelAddon:CalculateResearchAll()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_STARTED,
+    function(eventCode, craftingSkillType, researchLineIndex, traitIndex)
+      PXInfoPanelAddon:CalculateResearchAll()
+    end
+  )
+
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_TIMES_UPDATED,
+    function(eventCode)
+      PXInfoPanelAddon:CalculateResearchAll()
+    end
+  )
+
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_LOOT_RECEIVED,                   PXInfoPanelAddon.OnLootReceived)
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_LORE_BOOK_LEARNED,               PXInfoPanelAddon.OnLoreBookLearned)
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_MONEY_UPDATE,                    PXInfoPanelAddon.OnMoneyUpdate)
@@ -601,6 +641,9 @@ function PXInfoPanelAddon:Initialize()
 
   -- Initialize the inventory counts on Ancestor Silk etc.
   PXInfoPanelAddon:UpdateMonitoredInventory()
+
+  -- Initialize the research time, consecutive updates will be based on this initial call or if research is started.
+  PXInfoPanelAddon:CalculateResearchAll()
 
   PXInfoPanelAddon:RestorePosition()
   PXInfoPanelAddon:UpdateWritStatus()
@@ -936,17 +979,6 @@ end
 
 function PXInfoPanelAddon:GetTimeElapsed()
   return GetTimeStamp() - PXInfoPanelAddon.StartTimeMS 
-end
-
-function PXInfoPanelAddon:MoneyString(amount)
-  local formatted = amount
-  while true do  
-    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-    if (k==0) then
-      break
-    end
-  end
-  return formatted
 end
 
 function PXInfoPanelAddon:Notify(text, sound)
@@ -1483,7 +1515,7 @@ function PXInfoPanelAddon:UpdateUI()
     end
   end
 
-  text = text .. self:MonitorResearch()
+  text = text .. PXInfoPanelAddon:MonitorResearch()
   self:WriteLog(text)
 end
 
@@ -1492,9 +1524,9 @@ function PXInfoPanelAddon:MonitorResearch()
   local char = '\n'
   if (self.savedVariables.enableMonitorResearchBlacksmithing) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. self:CheckResearch(char, CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch(char, CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
     else
-      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch('\n', CRAFTING_TYPE_BLACKSMITHING, GetString(PXIP_BLACKSMITHING_LETTER))
     end
     if (text ~= '') then
       char = ','
@@ -1502,9 +1534,9 @@ function PXInfoPanelAddon:MonitorResearch()
   end
   if (self.savedVariables.enableMonitorResearchClothing) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. self:CheckResearch(char, CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch(char, CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
     else
-      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch('\n', CRAFTING_TYPE_CLOTHIER, GetString(PXIP_CLOTHING_LETTER))
     end
     if (text ~= '') then
       char = ','
@@ -1512,9 +1544,9 @@ function PXInfoPanelAddon:MonitorResearch()
   end
   if (self.savedVariables.enableMonitorResearchWoodworking) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. self:CheckResearch(char, CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch(char, CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
     else
-      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch('\n', CRAFTING_TYPE_WOODWORKING, GetString(PXIP_WOODWORKING_LETTER))
     end
     if (text ~= '') then
       char = ','
@@ -1522,9 +1554,9 @@ function PXInfoPanelAddon:MonitorResearch()
   end
   if (self.savedVariables.enableMonitorResearchJewelry) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. self:CheckResearch(char, CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch(char, CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
     else
-      text = text .. self:CheckResearch('\n', CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
+      text = text .. PXInfoPanelAddon:CheckResearch('\n', CRAFTING_TYPE_JEWELRYCRAFTING, GetString(PXIP_JEWELRY_LETTER))
     end
     if (text ~= '') then
       char = ','
@@ -1534,68 +1566,88 @@ function PXInfoPanelAddon:MonitorResearch()
   return text
 end
 
-function PXInfoPanelAddon:CheckResearch(newLine, craftingTraitType, name)
-  local text = ''
-  local found = false
-  local allknown = true
+function PXInfoPanelAddon:CalculateResearchAll()
+  PXInfoPanelAddon:CalculateResearch(CRAFTING_TYPE_BLACKSMITHING, PXIP.BI)
+  PXInfoPanelAddon:CalculateResearch(CRAFTING_TYPE_CLOTHIER, PXIP.CI)
+  PXInfoPanelAddon:CalculateResearch(CRAFTING_TYPE_WOODWORKING, PXIP.WI)
+  PXInfoPanelAddon:CalculateResearch(CRAFTING_TYPE_JEWELRYCRAFTING, PXIP.JI)
+end
 
-  local craftingLines = GetNumSmithingResearchLines(craftingTraitType)
-  local maxLines =  GetMaxSimultaneousSmithingResearch(craftingTraitType)
-  local shortestResearchTimeInLine = 60 * 60 * 24 * 30 * 12
+function PXInfoPanelAddon:CalculateResearch(craftingType, ri)
+  ri.LinesCurrentlyResearching = 0
+
+  ri.MaxLinesResearch = GetMaxSimultaneousSmithingResearch(craftingType)
+  local researchLines = GetNumSmithingResearchLines(craftingType)
+  local shortestResearchTimeInLine = 60 * 60 * 24 * 30 * 12 -- a year
   local traitName = ''
   local ttype = ''
 
   -- Check to see if all traits are known for this crafting type:
-  for x = 1, craftingLines do
-    local lineInfoName, icon, numTraits, timeRequiredForNextResearchSecs = GetSmithingResearchLineInfo(craftingTraitType, x)
+  for x = 1, researchLines do
+    local lineInfoName, icon, numTraits, timeRequiredForNextResearchSecs = GetSmithingResearchLineInfo(craftingType, x)
     for trait = 1, numTraits do
-      local traitType, traitDescription, known = GetSmithingResearchLineTraitInfo(craftingTraitType, x, trait)
+      local traitType, traitDescription, known = GetSmithingResearchLineTraitInfo(craftingType, x, trait)
       if (known == false) then
-        allknown = false
+        ri.AllKnown = false
       end
 
-      local duration, timeRemainingSecs = GetSmithingResearchLineTraitTimes(craftingTraitType, x, trait)
+      local duration, timeRemainingSecs = GetSmithingResearchLineTraitTimes(craftingType, x, trait)
       if (timeRemainingSecs ~= nil and timeRemainingSecs > 0) then
+        ri.LinesCurrentlyResearching = ri.LinesCurrentlyResearching + 1
         if (timeRemainingSecs < shortestResearchTimeInLine) then
-          ttype, traitName = GetSmithingTraitItemInfo(traitItemIndex)
+          --ttype, traitName = GetSmithingTraitItemInfo(traitItemIndex)
+          ri.SecondsRemaining = timeRemainingSecs
+          ri.TimeStamp = GetTimeStamp()
+          ri.TimeStringLong = self:SecondsToClock(timeRemainingSecs)
+          ri.TimeStringShort = self:FormatSeconds(timeRemainingSecs)
           shortestResearchTimeInLine = timeRemainingSecs
-          found = true
         end
       end
     end
   end
+end
 
-  if (allknown) then
-    return ''
+function PXInfoPanelAddon:CheckResearch(newLine, craftingTraitType, name)
+  local text = ''
+  local ri = {}
+
+  if (craftingTraitType == CRAFTING_TYPE_BLACKSMITHING) then
+    ri = PXIP.BI
+  elseif (craftingTraitType == CRAFTING_TYPE_CLOTHIER) then
+    ri = PXIP.CI
+  elseif (craftingTraitType == CRAFTING_TYPE_WOODWORKING) then
+    ri = PXIP.WI
+  elseif (craftingTraitType == CRAFTING_TYPE_JEWELRYCRAFTING) then
+    ri = PXIP.JI
   end
 
-  if (found == false) then
+  if (ri.AllKnown) then
+    return
+  end
+
+  if (ri.LinesCurrentlyResearching == 0) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. newLine .. PXInfoPanelAddon.ColorRed .. name .. ': -'
+      text = newLine .. PXInfoPanelAddon.ColorRed .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): -'
     else
-      text = text .. newLine .. PXInfoPanelAddon.ColorRed .. name .. ': No research active.'
+      text = newLine .. PXInfoPanelAddon.ColorRed .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): No research active.'
     end
   else
+    secondsLeft = ri.SecondsRemaining - ((GetTimeStamp() - ri.TimeStamp))
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = text .. newLine .. name .. ': ' .. PXInfoPanelAddon:SecondsToClock(shortestResearchTimeInLine)
+      text = newLine .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): ' .. PXInfoPanelAddon:SecondsToClock(secondsLeft)
     else
-      text = text .. newLine .. name .. ' ' .. traitName .. ', Time Left: ' .. self:FormatSeconds(shortestResearchTimeInLine)
+      text = newLine .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): ' .. self:FormatSeconds(secondsLeft)
     end
   end
 
   return text
 end
 
-function PXInfoPanelAddon:SecondsToClock(seconds)
-  local seconds = tonumber(seconds)
-
-  if seconds <= 0 then
-    return "00:00:00";
+function PXInfoPanelAddon:BooleanToString(b)
+  if (b == true) then
+    return 'true'
   else
-    hours = string.format("%02.f", math.floor(seconds / 3600));
-    mins = string.format("%02.f", math.floor(seconds / 60 - (hours * 60)));
-    secs = string.format("%02.f", math.floor(seconds - hours * 3600 - mins * 60));
-    return hours..":"..mins..":"..secs
+    return 'false'
   end
 end
 
@@ -1627,6 +1679,30 @@ function PXInfoPanelAddon:FormatSeconds(secondsArg)
    else
       return seconds  ..  ' '  ..  secondsTxt
    end  
+end
+
+function PXInfoPanelAddon:MoneyString(amount)
+  local formatted = amount
+  while true do  
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+    if (k==0) then
+      break
+    end
+  end
+  return formatted
+end
+
+function PXInfoPanelAddon:SecondsToClock(seconds)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then
+    return "00:00:00";
+  else
+    hours = string.format("%02.f", math.floor(seconds / 3600));
+    mins = string.format("%02.f", math.floor(seconds / 60 - (hours * 60)));
+    secs = string.format("%02.f", math.floor(seconds - hours * 3600 - mins * 60));
+    return hours..":"..mins..":"..secs
+  end
 end
 
 function PXInfoPanelAddon:ShowPVPInformation(text, newLine)
@@ -1708,12 +1784,4 @@ function PXInfoPanelAddon:WriteLog(text)
   local x = PXInfoPanelAddonIndicatorLabel:GetWidth()
   local y = PXInfoPanelAddonIndicatorLabel:GetHeight()
   PXInfoPanelAddonIndicator:SetDimensions(x + 15, y + 15)
-end
-
-function PXInfoPanelAddon:BooleanToString(b)
-  if (b == true) then
-    return 'true'
-  else
-    return 'false'
-  end
 end
