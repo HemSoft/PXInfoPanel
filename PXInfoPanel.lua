@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.7",
+  Version = "1.0.8",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -1595,7 +1595,6 @@ function PXInfoPanelAddon:CalculateResearch(craftingType, ri)
       if (timeRemainingSecs ~= nil and timeRemainingSecs > 0) then
         ri.LinesCurrentlyResearching = ri.LinesCurrentlyResearching + 1
         if (timeRemainingSecs < shortestResearchTimeInLine) then
-          --ttype, traitName = GetSmithingTraitItemInfo(traitItemIndex)
           ri.SecondsRemaining = timeRemainingSecs
           ri.TimeStamp = GetTimeStamp()
           ri.TimeStringLong = self:SecondsToClock(timeRemainingSecs)
@@ -1610,6 +1609,7 @@ end
 function PXInfoPanelAddon:CheckResearch(newLine, craftingTraitType, name)
   local text = ''
   local ri = {}
+  local color = PXInfoPanelAddon.ColorRed
 
   if (craftingTraitType == CRAFTING_TYPE_BLACKSMITHING) then
     ri = PXIP.BI
@@ -1625,18 +1625,23 @@ function PXInfoPanelAddon:CheckResearch(newLine, craftingTraitType, name)
     return
   end
 
+  if (ri.LinesCurrentlyResearching == ri.MaxLinesResearch) then
+    color = PXInfoPanelAddon.ColorGreen
+  else
+  end
+
   if (ri.LinesCurrentlyResearching == 0) then
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = newLine .. PXInfoPanelAddon.ColorRed .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): -'
+      text = newLine .. color .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. ')|r: -'
     else
-      text = newLine .. PXInfoPanelAddon.ColorRed .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): No research active.'
+      text = newLine .. color .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. ')|r: No research active.'
     end
   else
     secondsLeft = ri.SecondsRemaining - ((GetTimeStamp() - ri.TimeStamp))
     if (self.savedVariables.enableMonitorResearchShowCondensed) then
-      text = newLine .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): ' .. PXInfoPanelAddon:SecondsToClock(secondsLeft)
+      text = newLine .. color .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. ')|r: ' .. PXInfoPanelAddon:SecondsToClock(secondsLeft)
     else
-      text = newLine .. name .. ' (' .. ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. '): ' .. self:FormatSeconds(secondsLeft)
+      text = newLine .. color .. name .. ' (' ..  ri.LinesCurrentlyResearching .. '/' .. ri.MaxLinesResearch .. ')|r: ' .. self:FormatSeconds(secondsLeft)
     end
   end
 
@@ -1784,4 +1789,11 @@ function PXInfoPanelAddon:WriteLog(text)
   local x = PXInfoPanelAddonIndicatorLabel:GetWidth()
   local y = PXInfoPanelAddonIndicatorLabel:GetHeight()
   PXInfoPanelAddonIndicator:SetDimensions(x + 15, y + 15)
+end
+
+function PXInfoPanelAddon:SafeAssign(text)
+  if (text == nil) then
+    return ''
+  end
+  return text
 end
