@@ -1,3 +1,7 @@
+V1.0.8
+- API Bump to Wolfhunter
+- Minor visual improvements to research indicators.
+
 V1.0.7
 - The way that Research was being updated was causing lag because of too many API calls too quickly. This has been greatly optimized. Expect more visual improvements to the research part in the coming versions.
 
