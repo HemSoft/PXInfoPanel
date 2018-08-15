@@ -1,3 +1,6 @@
+V1.0.9
+- Now correctly iterating quests, and as a result, writ display is now accurate on login, quest log full and upon delivery!
+
 V1.0.8
 - API Bump to Wolfhunter
 - Minor visual improvements to research indicators.

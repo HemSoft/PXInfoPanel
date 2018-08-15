@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.8",
+  Version = "1.0.9",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -586,6 +586,7 @@ function PXInfoPanelAddon:Initialize()
 
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_QUEST_ADDED,                     function() PXInfoPanelAddon:UpdateWritStatus() end)
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_QUEST_COMPLETE,                  function() PXInfoPanelAddon:UpdateWritStatus() end)
+  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_QUEST_LOG_IS_FULL,               function() PXInfoPanelAddon:UpdateWritStatus() end)
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SKILL_XP_UPDATE,                 function() PXInfoPanelAddon:UpdateWritStatus() end)
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_SMITHING_TRAIT_RESEARCH_STARTED, function() PXInfoPanelAddon:UpdateWritStatus() end)
 
@@ -678,7 +679,7 @@ function PXInfoPanel_ProcessReset()
   PXInfoPanelAddon.WritStatusText = ''
 
   PXInfoPanelAddon:ResetCustomMonitorCounts()
-  PXInfoPanelAddon:UpdateUI()
+  PXInfoPanelAddon:UpdateWritStatus()
 end
 
 function PXInfoPanel_ProcessToggle()
@@ -1135,8 +1136,7 @@ function PXInfoPanelAddon:UpdateWritStatus()
   PXInfoPanelAddon.WritStatus.ProvisioningColor = PXInfoPanelAddon.ColorRed 
   PXInfoPanelAddon.WritStatus.ProvisioningPickedUp = false
 
-  local questCount = GetNumJournalQuests()
-  for questIndex = 1, questCount do
+  for questIndex = 1, MAX_JOURNAL_QUESTS do
     journalInfo = {}
     if IsValidQuestIndex(questIndex) then
       journalInfo.RepeatType = GetJournalQuestRepeatType(questIndex)
@@ -1144,7 +1144,6 @@ function PXInfoPanelAddon:UpdateWritStatus()
       journalInfo.ActiveStepTrackerOverrideText, journalInfo.Completed, journalInfo.Tracked, journalInfo.QuestLevel,
       journalInfo.Pushed, journalInfo.QuestType, journalInfo.InstanceDisplayType = GetJournalQuestInfo(questIndex)
 
-      local questComplete = GetJournalQuestIsComplete(questIndex)
       if journalInfo.QuestType == QUEST_TYPE_CRAFTING and
          journalInfo.RepeatType == QUEST_REPEAT_DAILY then
 
