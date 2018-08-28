@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.9",
+  Version = "1.0.10",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -807,7 +807,7 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
 
   -- Best loot:
   local notified = 0
-  if (tPrice > PXInfoPanelAddon.BestLootWorth) then
+  if (PXInfoPanelAddon.savedVariables.showBestLoot and tPrice > PXInfoPanelAddon.BestLootWorth) then
     PXInfoPanelAddon.BestLootWorth5 = PXInfoPanelAddon.BestLootWorth4
     PXInfoPanelAddon.BestLoot5 = PXInfoPanelAddon.BestLoot4
 

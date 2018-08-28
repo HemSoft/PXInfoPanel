@@ -158,8 +158,17 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
         {
           type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION),
+          getFunc = function() return self.savedVariables.showBestLootNotification end,
+          tooltip = GetString(PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION_TOOLTIP),
+          setFunc = function(e) self.savedVariables.showBestLootNotification = e; PXInfoPanelAddon:UpdateUI() end,
+          default = true,
+        },
+        {
+          type    = "checkbox",
           name    = GetString(PXIP_SETTINGS_SHOW_BEST_LOOT),
           getFunc = function() return self.savedVariables.showBestLoot end,
+          tooltip = GetString(PXIP_SETTINGS_SHOW_BEST_LOOT_TOOLTIP),
           setFunc = function(e) self.savedVariables.showBestLoot = e; PXInfoPanelAddon:UpdateUI() end,
           default = true,
         },

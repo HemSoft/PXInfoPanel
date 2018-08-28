@@ -184,6 +184,10 @@ local strings = {
   PXIP_SETTINGS_JEWELRY                              = "Jewelry",
   PXIP_SETTINGS_RESEARCH_SHOW_CONDENSED              = "Show research times in condensed one line format",
   PXIP_JEWELRY_LETTER                                = "J|r",
+
+  -- V1.0.10 -- New strings:
+  PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION          = "Show Best Loot Notifications.",
+  PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION_TOOLTIP  = "Whenever you loot an item that has the highest value so far during your game session, you will be notified on the center of your screen."
 }
 
 for stringId, stringValue in pairs(strings) do

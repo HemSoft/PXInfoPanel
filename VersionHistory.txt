@@ -1,3 +1,6 @@
+V1.0.10
+- Showing best loot notifications is now its own setting that can be switched on and off as previously intended.
+
 V1.0.9
 - Now correctly iterating quests, and as a result, writ display is now accurate on login, quest log full and upon delivery!
 
