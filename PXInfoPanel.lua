@@ -359,16 +359,108 @@ function PXInfoPanelAddon:Initialize()
   ---------
   -- PVE --
   ---------
+--  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_OPEN_TRADING_HOUSE,
+--    function(eventCode)
+--      d("PXIP -- Guild Store Opened")
+--      local guildId, guildName, guildAlliance = GetCurrentTradingHouseGuildDetails()
+--      d('PXIP -- Current guild: ' .. guildName)
+--      if (CanSellOnTradingHouse(guildId) == true) then
+--        d('PXIP -- Can sell!')
+--        -- ClearPendingItemPurchase()
+--      end
+--      --SetTradingHouseFilter(TRADING_HOUSE_FILTER_TYPE_ENCHANTMENT, 'Kuta')
+--      --d("Filter set")
+--      --ExecuteTradingHouseSearch(1, TRADING_HOUSE_SORT_SALE_PRICE, true)
+--    end
+--  )
+
+--  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_TRADING_HOUSE_SEARCH_RESULTS_RECEIVED,
+--    function(eventId, guildId, numItemsOnPage, currentPage, hasMorePages)
+--      d('PXIP -- EVENT_TRADING_HOUSE_SEARCH_RESULTS_RECEIVED')
+--      zo_callLater(function () PXInfoPanelAddon:DelayedTradingHouseSearchResultsReceived(eventCode, guildId, numItemsOnPage, currentPage, hasMorePages) end, 50)
+--    end
+--  )
+
+--  function PXInfoPanelAddon:DelayedTradingHouseSearchResultsReceived(eventCode, guildId, numItemsOnPage, currentPage, hasMorePages)
+--    for i = 1, numItemsOnPage do
+--      local itemLink = GetTradingHouseSearchResultItemLink(i)
+--      if (itemLink ~= nil) then
+--
+--        if (itemLink == '|H1:item:56862:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h') then
+--          d('PXIP --BOOM!')
+--        end
+--
+--        local itemType, specializedItemType = GetItemLinkItemType(itemLink)
+--        if (itemType == ITEMTYPE_RECIPE) then
+--          local isKnown = IsItemLinkRecipeKnown(itemLink)
+--          if (isKnown == false) then
+--            knownText = ' (Unknown!)'
+--          end
+--        end
+--        local icon, itemName, quality, stackCount, sellerName, timeRemaining, purchasePrice, currencyType = GetTradingHouseSearchResultItemInfo(i)
+--        local mPrice = PXInfoPanelAddon:GetItemPrice(itemLink) * stackCount
+--        if (purchasePrice > 0 and mPrice > 0) then
+--          local offBy = purchasePrice - mPrice
+--          local offByPercent = (offBy / purchasePrice) * 100
+--          local goodDeal = false;
+--          local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(storeItemLink)
+--          local totalStackSize = stackCountBackpack + stackCountBank + stackCountCraftBag
+--
+--          if (offByPercent <= 0) then
+--            d('PXIP -- ' .. zo_strformat("<<1>>: <<2>> x <<3>> Sales Price: <<4>> (<<5>>)", sellerName, stackCount, itemLink, PXInfoPanelAddon:MoneyString(purchasePrice), PXInfoPanelAddon:MoneyString(PXInfoPanelAddon:Round(mPrice))))
+--            --SetPendingItemPurchase(i)
+--            --ConfirmPendingItemPurchase()
+--            --ClearPendingItemPurchase()
+--          end
+--        end
+--      end
+--    end
+--  end
+
+--  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_TRADING_HOUSE_STATUS_RECEIVED,
+--    function(eventCode)
+--      d('PXIP -- EVENT_TRADING_HOUSE_STATUS_RECEIVED -- ' .. eventCode)
+--    end
+--  )
+  --TradingHouseResult
+  --TRADING_HOUSE_RESULT_AWAITING_INITIAL_STATUS
+  --TRADING_HOUSE_RESULT_CANCEL_SALE_PENDING
+  --TRADING_HOUSE_RESULT_CANT_AFFORD_BUYPRICE
+  --TRADING_HOUSE_RESULT_CANT_AFFORD_POST_FEE
+  --TRADING_HOUSE_RESULT_CANT_BUY_YOUR_OWN_POSTS
+  --TRADING_HOUSE_RESULT_CANT_POST_BOUND
+  --TRADING_HOUSE_RESULT_CANT_POST_LOCKED
+  --TRADING_HOUSE_RESULT_CANT_POST_STOLEN
+  --TRADING_HOUSE_RESULT_CANT_SELL_FOR_FREE
+  --TRADING_HOUSE_RESULT_CANT_SELL_FOR_OVER_MAX_AMOUNT
+  --TRADING_HOUSE_RESULT_CANT_SWITCH_GUILDS_WHILE_AWAITING_RESPONSE
+  --TRADING_HOUSE_RESULT_CAN_ONLY_POST_FROM_BACKPACK
+  --TRADING_HOUSE_RESULT_GUILD_TOO_SMALL
+  --TRADING_HOUSE_RESULT_INVALID_GUILD_ID
+  --TRADING_HOUSE_RESULT_ITEM_NOT_FOUND
+  --TRADING_HOUSE_RESULT_LISTINGS_PENDING
+  --TRADING_HOUSE_RESULT_NOT_A_MEMBER
+  --TRADING_HOUSE_RESULT_NOT_IN_A_GUILD
+  --TRADING_HOUSE_RESULT_NOT_OPEN
+  --TRADING_HOUSE_RESULT_NO_PERMISSION
+  --TRADING_HOUSE_RESULT_POST_PENDING
+  --TRADING_HOUSE_RESULT_PURCHASE_PENDING
+  --TRADING_HOUSE_RESULT_SEARCH_PENDING
+  --TRADING_HOUSE_RESULT_SEARCH_RATE_EXCEEDED
+  --TRADING_HOUSE_RESULT_SUCCESS
+  --TRADING_HOUSE_RESULT_TOO_MANY_POSTS
+
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_OPEN_STORE,
     function(eventCode)
       if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
-        d('PXVM -- EVENT_OPEN_TRADING_HOUSE')
+        d('PXVM -- EVENT_OPEN_STORE')
       end
       if (PXInfoPanelAddon.savedVariables.enableVendorAutomation) then
         if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
           d('PXVM -- Vendor automation enabled.')
         end
         local goldSpent = 0
+       
         local storeItems = GetNumStoreItems()
         if (PXInfoPanelAddon.savedVariables.enableVendorAutomationDebugging) then
           d('PXVM -- Store Items = ' .. storeItems)
@@ -542,8 +634,8 @@ function PXInfoPanelAddon:Initialize()
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_INVENTORY_SINGLE_SLOT_UPDATE,
     function(eventCode, bagId, slotId, isNewItem, itemSoundCategory, inventoryUpdateReason, stackCountChange)
       local itemLink = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
-      local mPrice = PXInfoPanelAddon:GetMMPrice(itemLink)
-      local tPrice = stackCountChange * mPrice
+      local mPrice = PXInfoPanelAddon:GetItemPrice(itemLink)
+      local tPrice = PXInfoPanelAddon:Round(stackCountChange * mPrice)
       PXInfoPanelAddon.TotalGoldMade = PXInfoPanelAddon.TotalGoldMade + tPrice
       PXInfoPanelAddon:UpdateUI()
     end
@@ -720,8 +812,9 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
 
   PXInfoPanelAddon:UpdateBagCounts(itemLink)
 
-  local mPrice = PXInfoPanelAddon:GetMMPrice(itemLink)
-  local tPrice = quantity * mPrice
+  local mPrice = PXInfoPanelAddon:GetItemPrice(itemLink)
+  local tPrice = PXInfoPanelAddon:Round(quantity * mPrice)
+  local mtPrice = PXInfoPanelAddon:MoneyString(tPrice)
   local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
   local totalStackSize = stackCountBackpack + stackCountBank + stackCountCraftBag
   local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
@@ -786,22 +879,31 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
   if (playerName == looterName) then
     if (totalStackSize > 1) then
       if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
-        text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] (<<5>>) <<6>><<7>><<8>>", quantity, itemIconText, itemLink, traitName, totalStackSize, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
+        text = quantity .. ' x '
+        text = text .. itemIconText
+        text = text .. itemLink .. ' ['
+        text = text .. traitName .. '] ('
+        text = text .. totalStackSize .. ') '
+        text = text .. PXInfoPanelAddon.GoldIconText
+        text = text .. PXInfoPanelAddon:MoneyString(tPrice)
+        text = text .. knownText
       else
         text = zo_strformat("<<1>> x <<2>><<3>> (<<4>>) <<5>><<6>><<7>>", quantity, itemIconText, itemLink, totalStackSize, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
       end
     else
       if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
         text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] <<5>><<6>><<7>>", quantity, itemIconText, itemLink, traitName, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
-      else
+     else
         text = zo_strformat("<<1>> x <<2>><<3>> <<4>><<5>><<6>>", quantity, itemIconText, itemLink, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice), knownText)
       end
     end
   elseif (PXInfoPanelAddon.savedVariables.showGroupLoot == true) then
     if (PXInfoPanelAddon.savedVariables.showLastLootTrait == true and traitType > 0) then
       text = zo_strformat("<<1>> x <<2>><<3>> [<<4>>] (<<5>>) <<6>><<7>>", quantity, itemIconText, itemLink, traitName, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
+      d('PXIP - 5 - ' .. text)
     else
       text = zo_strformat("<<1>> x <<2>><<3>> (<<4>>) <<5>><<6>>", quantity, itemIconText, itemLink, lootedBy, PXInfoPanelAddon.GoldIconText, PXInfoPanelAddon:MoneyString(tPrice))
+      d('PXIP - 6 - ' .. text)
     end
   end
 
@@ -939,32 +1041,46 @@ function PXInfoPanelAddon:AdjustItemLink(e)
   end
 end
 
+function PXInfoPanelAddon:GetATTPrice(itemLink)
+    if (ArkadiusTradeTools == nil or ArkadiusTradeTools.Modules.Sales == nil) then
+        return nil
+    end
+    local days = ArkadiusTradeToolsSalesData.settings.tooltips.days
+    local startingDate = GetTimeStamp() - (SECONDS_IN_DAY * days)
+    local itemPrice = ArkadiusTradeTools.Modules.Sales:GetAveragePricePerItem(itemLink, startingDate)
+    return itemPrice
+end
+
 function PXInfoPanelAddon:GetMMPrice(itemLink)
-  local mPrice = 0
-  local mm
-
-  if (MasterMerchant ~= nil) then
-    mm = MasterMerchant:itemStats(itemLink, false)
-    if mm == nil or mm.avgPrice == nil then
-      local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
-      if sellPrice ~= nil and sellPrice > 0 then
-        mPrice = sellPrice
-      end
-      return mPrice
+    if (MasterMerchant == nil) then
+        return nil
     end
-
-    if mm.avgPrice and mm.avgPrice > 0 then
-      mPrice = PXInfoPanelAddon:Round(mm.avgPrice)
+    local itemStats = MasterMerchant:itemStats(itemLink, false)
+    if (itemStats == nil) then
+        return itemStats
+    else
+        return itemStats.avgPrice
     end
-  else
-    local icon, sellPrice, meetsUsageRequirement, equipType, itemStyle = GetItemLinkInfo(itemLink)
-    if sellPrice ~= nil and sellPrice > 0 then
-      mPrice = sellPrice
-    end
-    return mPrice
-  end
+end
 
-  return mPrice
+function PXInfoPanelAddon:GetTTCPrice(itemLink)
+    if (TamrielTradeCentrePrice == nil) then
+        return nil
+    end
+    local priceInfo = TamrielTradeCentrePrice:GetPriceInfo(itemLink)
+    if (priceInfo == nil) then
+        return priceInfo
+    else
+        return priceInfo.SuggestedPrice
+    end
+end
+
+function PXInfoPanelAddon:GetItemPrice(itemLink)
+    local price = PXInfoPanelAddon:GetATTPrice(itemLink) or PXInfoPanelAddon:GetMMPrice(itemLink) or PXInfoPanelAddon:GetTTCPrice(itemLink)
+    if (price == nil or price == 0) then
+        price = GetItemLinkValue(itemLink, true)
+    end
+    return price
 end
 
 function PXInfoPanelAddon:GetPVPInfo()
