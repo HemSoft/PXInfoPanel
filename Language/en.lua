@@ -187,7 +187,13 @@ local strings = {
 
   -- V1.0.10 -- New strings:
   PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION          = "Show Best Loot Notifications.",
-  PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION_TOOLTIP  = "Whenever you loot an item that has the highest value so far during your game session, you will be notified on the center of your screen."
+  PXIP_SETTINGS_SHOW_BEST_LOOT_NOTIFICATION_TOOLTIP  = "Whenever you loot an item that has the highest value so far during your game session, you will be notified on the center of your screen.",
+
+  -- V1.0.13 -- New strings:
+  PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE        = "Show current survey count for current zone:",
+  PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE_TOOLTIP= "Show current survey count you have for the current zone your are in.",
+  PXIP_SURVEYS_IN_ZONE                               = "Surveys in zone:",
+  PXIP_ENLIGHTENED_POOL_ABOVE_ONE_MILLION            = "Enlightened pool at or above 1 million!"
 }
 
 for stringId, stringValue in pairs(strings) do

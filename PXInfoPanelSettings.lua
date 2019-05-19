@@ -320,6 +320,14 @@ function PXInfoPanelAddon:CreateSettingsWindow()
           setFunc = function(e) self.savedVariables.showAchievementProgressInChat = e; PXInfoPanelAddon:UpdateUI() end,
           default = true,
         },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE),
+          tooltip = GetString(PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE_TOOLTIP),
+          getFunc = function() return self.savedVariables.showSurveyCountInCurrentZone end,
+          setFunc = function(e) self.savedVariables.showSurveyCountInCurrentZone = e; PXInfoPanelAddon:UpdateUI() end,
+          default = false,
+        },
       },
     },
 

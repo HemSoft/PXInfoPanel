@@ -1,3 +1,8 @@
+V1.0.13
+- API Bump to Elsweyr
+- Added Survey counter.
+- Made LibAddonMenu-2.0 an external dependency.
+
 V1.0.12
 - API Bump to Wrathstone
 - Improvements to pricing throughout. Support for Arkadius' Trade Tools.
