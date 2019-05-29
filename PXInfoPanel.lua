@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.13",
+  Version = "1.0.14",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -47,6 +47,8 @@ PXInfoPanelAddon = {
   CurrentZone = '',
   CurrentSubZone = '',
   SurveyCountInZone = 0,
+  SurveyCountInZoneDone = 0,
+  SurveyTimeLeftInZoneMinutes = 0,
   GuildBankTransferErrors = 0,
   GuildBankTransferDone = false,
   GoldTransferToGuildComplete = false,
@@ -479,9 +481,9 @@ function PXInfoPanelAddon:Initialize()
           end
           PXInfoPanelAddon.GoldTransferToGuildComplete = false
 
-          --if (self.GuildBankTransferDone == false) then
-          --  PXInfoPanelAddon:TransferGuildBankItems()
-          --end
+          if (self.GuildBankTransferDone == false) then
+            PXInfoPanelAddon:TransferGuildBankItems()
+          end
         end
       end
     end
@@ -490,17 +492,24 @@ function PXInfoPanelAddon:Initialize()
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEM_ADDED,
     function(eventCode, slotId)
       self.GuildBankTransferErrors = 0
-      zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 500)
+
+      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+        zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 500)
+      end
     end
   )
 
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_TRANSFER_ERROR,
     function(eventCode, reason)
-      self.GuildBankTransferErrors = self.GuildBankTransferErrors + 1
-      if (self.GuildBankTransferErrors < 5) then
-        zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 1000)
-      else
-        d('PXIP -- EVENT_GUILD_BANK_TRANSFER_ERROR -- Exceeded 5 errors, aborting guild bank transfer(s).')
+      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+        self.GuildBankTransferErrors = self.GuildBankTransferErrors + 1
+        if (self.GuildBankTransferErrors < 5) then
+          zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 1000)
+        else
+          d('PXIP -- EVENT_GUILD_BANK_TRANSFER_ERROR -- Exceeded 5 errors, aborting guild bank transfer(s).')
+        end
       end
     end
   )
@@ -974,8 +983,18 @@ function PXInfoPanelAddon:OnWritVoucherUpdate(eventCode, newWritVouchers, oldWri
 end
 
 function PXInfoPanelAddon:OnZoneChange(eventCode, zoneName, subZoneName, newSubzone, zoneId, subZoneId)
+  if (PXInfoPanelAddon.savedVariables.showSurveyCountInCurrentZone == false) then
+    return
+  end
+
+  local oldZone = PXInfoPanelAddon.CurrentZone
   PXInfoPanelAddon.CurrentZone = GetPlayerActiveZoneName()
   PXInfoPanelAddon.CurrentSubZone = GetPlayerActiveSubzoneName()
+  if (zoneName ~= nil and PXInfoPanelAddon.CurrentZone ~= zoneName) then
+    PXInfoPanelAddon.SurveyCountInZoneDone = 0
+    PXInfoPanelAddon.SurveyTimeLeftInZoneMinutes = 0
+    PXInfoPanelAddon:UpdateSurveyCount()
+  end
 end
 
 -- Finally, we'll register our event handler function to be called when the proper event occurs.
@@ -1097,6 +1116,11 @@ function PXInfoPanelAddon:FindEmptySlots(location)
 end
 
 function PXInfoPanelAddon:TransferGuildBankItems()
+  -- TODO: Uncomment before publish
+  return
+  if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == false or guildName ~= PXInfoPanelAddon.savedVariables.guildbankName or PXInfoPanelAddon.GoldTransferToGuildComplete == false) then
+    return
+  end
   if (self.GuildBankTransferDone == true) then
     return
   end
@@ -1212,16 +1236,23 @@ function PXInfoPanelAddon:TransferGuildBankItems()
         return
       end
 
+      -- Key Fragments
+      if (itemType == ITEMTYPE_TROPHY and specializedItemType == SPECIALIZED_ITEMTYPE_TROPHY_KEY_FRAGMENT and isItemBound == false) then
+        d('PXIP -M- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
+        TransferToGuildBank(BAG_BACKPACK, x)
+        return
+      end
+
       -- AvA Repair
       if (specializedItemType == SPECIALIZED_ITEMTYPE_AVA_REPAIR) then
-        d('PXIP -M- Storing ' .. itemLink .. ' in Guild Bank.')
+        d('PXIP -N- Storing ' .. itemLink .. ' in Guild Bank.')
         TransferToGuildBank(BAG_BACKPACK, x)
         return
       end
 
       -- Furnishing
       if (itemType == ITEMTYPE_RECIPE and isItemRecipeKnown == true and isItemBound == false and isItemStolen == false) then
-        d('PXIP -N- Storing ' .. itemLink .. ' in Guild Bank.')
+        d('PXIP -O- Storing ' .. itemLink .. ' in Guild Bank.')
         TransferToGuildBank(BAG_BACKPACK, x)
         return
       end
@@ -1229,7 +1260,7 @@ function PXInfoPanelAddon:TransferGuildBankItems()
       -- Repair Kits
       if (itemType == ITEMTYPE_TOOL and isItemBound == false and isItemStolen == false) then
         if (stackCountBackpack > 200 and stack < 200) then
-          d('PXIP -O- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
+          d('PXIP -P- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
           TransferToGuildBank(BAG_BACKPACK, x)
           return
         end
@@ -1239,10 +1270,17 @@ function PXInfoPanelAddon:TransferGuildBankItems()
       if (itemType == ITEMTYPE_SOUL_GEM and isItemBound == false and isItemStolen == false) then
         --local tier, soulGemType = GetSoulGemItemInfo(BAG_BACKPACK, x)
         if (stackCountBackpack > 200 and stack < 200) then
-          d('PXIP -P- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
+          d('PXIP -Q- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
           TransferToGuildBank(BAG_BACKPACK, x)
           return
         end
+      end
+
+      -- Fish
+      if (itemType == ITEMTYPE_FISH and specializedItemType == SPECIALIZED_ITEMTYPE_FISH and isItemBound == false) then
+        d('PXIP -M- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
+        TransferToGuildBank(BAG_BACKPACK, x)
+        return
       end
 
       --d('PXIP -O- ' .. itemLink .. ', itemType = ' .. itemType .. ', stackSize = ' .. stackCountBackpack .. ', stack = ' .. stack)
@@ -1818,7 +1856,7 @@ function PXInfoPanelAddon:UpdateUI()
   end
 
   if (self.savedVariables.showSurveyCountInCurrentZone and self.SurveyCountInZone > 0) then
-    text = text .. newLine .. GetString(PXIP_SURVEYS_IN_ZONE) .. ' ' .. self.SurveyCountInZone
+    text = text .. newLine .. GetString(PXIP_SURVEYS_IN_ZONE) .. ' ' .. self.SurveyCountInZone .. ', ' .. self.SurveyCountInZoneDone .. ' done. Done in ' .. self.SurveyTimeLeftInZoneMinutes .. ' minutes.'
   end
 
   if (self.savedVariables.showWritStatus and self.WritStatusText ~= nill and self.WritStatusText ~= '') then
@@ -2146,6 +2184,7 @@ end
 
 function PXInfoPanelAddon:UpdateSurveyCount()
   local bagItemCount =  GetBagSize(BAG_BACKPACK)
+  local SurveyCountInZoneBefore = self.SurveyCountInZone
   self.SurveyCountInZone = 0
   for x = 1, bagItemCount do
     local itemLink = GetItemLink(BAG_BACKPACK, x)
@@ -2158,6 +2197,30 @@ function PXInfoPanelAddon:UpdateSurveyCount()
           self.SurveyCountInZone = self.SurveyCountInZone + stackCountBackpack
         end
       end
+    end
+  end
+  self.SurveyCountInZoneDone = self.SurveyCountInZoneDone + (SurveyCountInZoneBefore - self.SurveyCountInZone)
+  if (self.SurveyCountInZoneDone < 0) then
+    self.SurveyCountInZoneDone = 0
+  end
+  if (self.SurveyCountInZone > 0) then
+    --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone .. ', self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone)
+    self.TimeElapsedMS = PXInfoPanelAddon.GetTimeElapsed()
+    if self.TimeElapsedMS == 0 then
+      self.TimeElapsedMS = 1
+    end
+
+    if (self.SurveyCountInZoneDone > 0) then
+      local averageSurveyTimeInSeconds = self:Round(PXInfoPanelAddon.TimeElapsedMS / self.SurveyCountInZoneDone, 0)
+      local surveyTimeLeftInSeconds = averageSurveyTimeInSeconds * self.SurveyCountInZone
+      self.SurveyTimeLeftInZoneMinutes = self:Round(surveyTimeLeftInSeconds / 60, 0)
+
+      --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone);
+      --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone);
+      --d('PXIP -- UpdateSurveyCount() -- SurveyCountInZoneBefore = ' .. SurveyCountInZoneBefore);
+      --d('PXIP -- UpdateSurveyCount() -- averageSurveyTimeInSeconds = ' .. averageSurveyTimeInSeconds);
+      --d('PXIP -- UpdateSurveyCount() -- surveyTimeLeftInSeconds = ' .. surveyTimeLeftInSeconds);
+      --d('PXIP -- UpdateSurveyCount() -- self.SurveyTimeLeftInZoneMinutes = ' .. self.SurveyTimeLeftInZoneMinutes);
     end
   end
 end

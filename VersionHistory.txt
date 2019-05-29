@@ -1,3 +1,7 @@
+V1.0.14
+- No longer storing items in guild bank as this was experimental code.
+- Added stats to survey count in zone to make it more interesting to do those many surveys :)
+
 V1.0.13
 - API Bump to Elsweyr
 - Added Survey counter.
