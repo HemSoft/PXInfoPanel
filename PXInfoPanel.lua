@@ -481,38 +481,41 @@ function PXInfoPanelAddon:Initialize()
           end
           PXInfoPanelAddon.GoldTransferToGuildComplete = false
 
-          if (self.GuildBankTransferDone == false) then
-            PXInfoPanelAddon:TransferGuildBankItems()
-          end
+          -- TODO: Comment out before making public
+          --if (self.GuildBankTransferDone == false) then
+          --  PXInfoPanelAddon:TransferGuildBankItems()
+          --end
         end
       end
     end
   )
 
-  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEM_ADDED,
-    function(eventCode, slotId)
-      self.GuildBankTransferErrors = 0
+  -- TODO: Comment out before making public
+  --EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEM_ADDED,
+  --  function(eventCode, slotId)
+  --    self.GuildBankTransferErrors = 0
 
-      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
-      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-        zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 500)
-      end
-    end
-  )
+  --    local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+  --    if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+  --      zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 500)
+  --    end
+  --  end
+  --)
 
-  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_TRANSFER_ERROR,
-    function(eventCode, reason)
-      local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
-      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-        self.GuildBankTransferErrors = self.GuildBankTransferErrors + 1
-        if (self.GuildBankTransferErrors < 5) then
-          zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 1000)
-        else
-          d('PXIP -- EVENT_GUILD_BANK_TRANSFER_ERROR -- Exceeded 5 errors, aborting guild bank transfer(s).')
-        end
-      end
-    end
-  )
+  -- TODO: Comment out before making public
+  --EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_TRANSFER_ERROR,
+  --  function(eventCode, reason)
+  --    local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
+  --    if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
+  --      self.GuildBankTransferErrors = self.GuildBankTransferErrors + 1
+  --      if (self.GuildBankTransferErrors < 5) then
+  --        zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 1000)
+  --      else
+  --        d('PXIP -- EVENT_GUILD_BANK_TRANSFER_ERROR -- Exceeded 5 errors, aborting guild bank transfer(s).')
+  --      end
+  --    end
+  --  end
+  --)
 
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ACHIEVEMENT_UPDATED,
     function(eventCode, id)
@@ -1116,8 +1119,6 @@ function PXInfoPanelAddon:FindEmptySlots(location)
 end
 
 function PXInfoPanelAddon:TransferGuildBankItems()
-  -- TODO: Uncomment before publish
-  return
   if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == false or guildName ~= PXInfoPanelAddon.savedVariables.guildbankName or PXInfoPanelAddon.GoldTransferToGuildComplete == false) then
     return
   end
