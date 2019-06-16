@@ -1,7 +1,7 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.14",
+  Version = "1.0.15",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -43,15 +43,11 @@ PXInfoPanelAddon = {
   PVPInfo = {},
   PVPLastAchievementUpdate = GetTimeStamp(),
   PVPLastAchievementId = -1,
-  CurrentGuildId = -1,
   CurrentZone = '',
   CurrentSubZone = '',
   SurveyCountInZone = 0,
   SurveyCountInZoneDone = 0,
   SurveyTimeLeftInZoneMinutes = 0,
-  GuildBankTransferErrors = 0,
-  GuildBankTransferDone = false,
-  GoldTransferToGuildComplete = false,
 
   ColorGold   = '|cd8b620',
   ColorGreen  = '|c28b712',
@@ -131,6 +127,13 @@ PXInfoPanelAddon = {
     enableMonitorResearchJewelry = false,
     enableMonitorResearchShowCondensed = false,
     showSurveyCountInCurrentZone = false,
+    showFishingStatistics = false,
+    fishingStats = {
+      FishCaughtSession = 0,
+      FishCaughtTotal = 0,
+      FishGoldMadeSession = 0,
+      FishGoldMadeTotal = 0,
+    },
   },
   MonitorMaterial = {
     { Name = GetString(PXIP_RAW_ANCESTOR_SILK),  RefinedName = GetString(PXIP_RAW_ANCESTOR_SILK_REFINED_NAME),  ShortName = GetString(PXIP_RAW_ANCESTOR_SILK_SHORT_NAME),  Minimum = 200, Count = 0, InventoryCount = 0, RefinedInventoryCount = 0, RawLink = '|H0:item:71200:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h',  RefinedLink = '|H0:item:64504:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h' },
@@ -455,68 +458,6 @@ function PXInfoPanelAddon:Initialize()
     end
   )
 
-  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_SELECTED,
-    function(eventCode, guildId)
-      PXInfoPanelAddon.CurrentGuildId = guildId
-    end
-  )
-
-  EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEMS_READY,
-    function(eventCode)
-      if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true) then
-        local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
-
-        if (guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-          local guildBankedMoney = GetCurrencyAmount(CURT_MONEY, CURRENCY_LOCATION_GUILD_BANK)
-          local myMoney = GetCurrentMoney()
-          local amountOver = myMoney - PXInfoPanelAddon.savedVariables.guildbankAutomationGoldOnCharacter
-
-          if (amountOver > 0) then
-            d('PXIP -- Deposited ' .. self:MoneyString(amountOver) .. ' gold into your guild as per specified settings.')
-            TransferCurrency(CURT_MONEY, amountOver, CURRENCY_LOCATION_CHARACTER, CURRENCY_LOCATION_GUILD_BANK)
-          end
-          if (amountOver < 0) then
-            d('PXIP -- Withdrew ' .. self:MoneyString(amountOver * -1) .. ' gold from your guild as per specified settings.')
-            TransferCurrency(CURT_MONEY, (amountOver * -1), CURRENCY_LOCATION_GUILD_BANK, CURRENCY_LOCATION_CHARACTER)
-          end
-          PXInfoPanelAddon.GoldTransferToGuildComplete = false
-
-          -- TODO: Comment out before making public
-          --if (self.GuildBankTransferDone == false) then
-          --  PXInfoPanelAddon:TransferGuildBankItems()
-          --end
-        end
-      end
-    end
-  )
-
-  -- TODO: Comment out before making public
-  --EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_ITEM_ADDED,
-  --  function(eventCode, slotId)
-  --    self.GuildBankTransferErrors = 0
-
-  --    local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
-  --    if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-  --      zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 500)
-  --    end
-  --  end
-  --)
-
-  -- TODO: Comment out before making public
-  --EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_GUILD_BANK_TRANSFER_ERROR,
-  --  function(eventCode, reason)
-  --    local guildName = GetGuildName(PXInfoPanelAddon.CurrentGuildId)
-  --    if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == true and guildName == PXInfoPanelAddon.savedVariables.guildbankName and PXInfoPanelAddon.GoldTransferToGuildComplete == true) then
-  --      self.GuildBankTransferErrors = self.GuildBankTransferErrors + 1
-  --      if (self.GuildBankTransferErrors < 5) then
-  --        zo_callLater(function () PXInfoPanelAddon:TransferGuildBankItems() end, 1000)
-  --      else
-  --        d('PXIP -- EVENT_GUILD_BANK_TRANSFER_ERROR -- Exceeded 5 errors, aborting guild bank transfer(s).')
-  --      end
-  --    end
-  --  end
-  --)
-
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ACHIEVEMENT_UPDATED,
     function(eventCode, id)
       if (self.savedVariables.showAchievementProgressInChat == false) then
@@ -681,6 +622,9 @@ function PXInfoPanelAddon:Initialize()
   PXInfoPanelAddon.IsEnlightenedAvailableForCharacter = IsEnlightenedAvailableForCharacter()
   PXInfoPanelAddon.EnlightenedPool = GetEnlightenedPool()
 
+  PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession = 0
+  PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession = 0
+
   PXInfoPanelAddon:ResetCustomMonitorCounts()
   PXInfoPanelAddon:CreateSettingsWindow()
 
@@ -721,6 +665,9 @@ function PXInfoPanel_ProcessReset()
 
   PXInfoPanelAddon.LastLoreBookLearned = ''
   PXInfoPanelAddon.WritStatusText = ''
+
+  PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession = 0
+  PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession = 0
 
   PXInfoPanelAddon:ResetCustomMonitorCounts()
   PXInfoPanelAddon:UpdateWritStatus()
@@ -782,6 +729,13 @@ function PXInfoPanelAddon:OnLootReceived(lootedBy, itemLink, quantity, itemSound
     if (isKnown == false) then
       knownText = ' (Unknown!)'
     end
+  end
+
+  if (itemType == ITEMTYPE_FISH) then
+    PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession = PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession + 1
+    PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtTotal = PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtTotal + 1
+    PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession = PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession + mPrice
+    PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeTotal = PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeTotal + mPrice
   end
 
   -- equipType:
@@ -993,7 +947,7 @@ function PXInfoPanelAddon:OnZoneChange(eventCode, zoneName, subZoneName, newSubz
   local oldZone = PXInfoPanelAddon.CurrentZone
   PXInfoPanelAddon.CurrentZone = GetPlayerActiveZoneName()
   PXInfoPanelAddon.CurrentSubZone = GetPlayerActiveSubzoneName()
-  if (zoneName ~= nil and PXInfoPanelAddon.CurrentZone ~= zoneName) then
+  if (oldZone ~= PXInfoPanelAddon.CurrentZone) then
     PXInfoPanelAddon.SurveyCountInZoneDone = 0
     PXInfoPanelAddon.SurveyTimeLeftInZoneMinutes = 0
     PXInfoPanelAddon:UpdateSurveyCount()
@@ -1003,108 +957,6 @@ end
 -- Finally, we'll register our event handler function to be called when the proper event occurs.
 EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_ADD_ON_LOADED, PXInfoPanelAddon.OnAddOnLoaded)
 
----------------------------------------------------------------------------------------------------------
--- S L A S H    C O M M A N D S
----------------------------------------------------------------------------------------------------------
-SLASH_COMMANDS["/pxip_guild_get_items_to_sell"] = function (extra)
-  if (IsGuildBankOpen() == false) then
-    d('PXIP -- Guild bank not open.')
-  end
-
-  zo_callLater(function () PXInfoPanelAddon:DoTransfer(BAG_GUILDBANK, 'Items To Sell', extra) end, 1000)
-end
-
-function PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count)
-  local itemsToGet = tonumber(count)
-  local slotsUsed = 0
-  local bagEmptySlots = 0
-  local emptySlots = PXInfoPanelAddon:FindEmptySlots(BAG_BACKPACK)
-
-  d('PXIP -- /pxip_guild_get_gold_glyphs -- glyphCountToGet = ' .. itemsToGet)
-  d('PXIP -- /pxip_guild_get_gold_glyphs -- emptySlots = ' .. #emptySlots)
-
-  for x = 1, GetBagSize(sourceBag) do
-    if (slotsUsed > itemsToGet) then
-      d('PXIP -- Bail 1')
-      return
-    end
-    if (#emptySlots < 1) then
-      return
-      d('PXIP -- Bail 2')
-    end
-    local itemLink = GetItemLink(sourceBag, x)
-    if (itemLink == nil or itemLink == '') then
-      bagEmptySlots = bagEmptySlots + 1
-    else
-      local canItemBeResearched = CanItemLinkBeTraitResearched(itemLink)
-      local itemName = zo_strformat("<<1>>", GetItemName(sourceBag, x))
-      local itemLevel = GetItemLevel(sourceBag, x)
-      local itemTrait = GetItemLinkTraitType(itemLink)
-      local itemType, specializedItemType = GetItemLinkItemType(itemLink)
-      local itemQuality =  GetItemLinkQuality(itemLink)
-      local isItemBound = IsItemBound(sourceBag, x)
-      local isItemCrafted = IsItemLinkCrafted(itemLink)
-      local isItemEnchantable = IsItemEnchantable(sourceBag, x)
-      local isItemEnchantment = IsItemEnchantment(sourceBag, x)    
-      local isItemJunk = IsItemJunk(sourceBag, x)
-      local isItemMotifKnown = IsItemLinkBookKnown(itemLink)
-      local isItemRecipeKnown = IsItemLinkRecipeKnown(itemLink)
-      local isItemStolen = IsItemLinkStolen(itemLink)
-      local armorType = GetItemArmorType(sourceBag, x)
-      local itemFilterType = GetItemFilterTypeInfo(sourceBag, x)
-      local substr = string.sub(itemName, 1, 8)
-
-      if (itemNames == 'Items To Sell') then
-        -- Non self crafted enchantments.
-        if (isItemEnchantment and isItemCrafted == false and itemLevel == 75) then
-          slotsUsed = slotsUsed + 1
-          d('PXIP -A- Retrieving ' .. itemLink .. ' into empty slot ' .. emptySlots[slotsUsed])
-          TransferFromGuildBank(x)
-          zo_callLater(function () PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count - 1) end, 1000)
-          return
-        end
-
-        -- Armor
-        if (itemFilterType == ITEMFILTERTYPE_ARMOR and isItemBound == false and isItemJunk == false and isItemStolen == false and isItemCrafted == false and canItemBeResearched == false and itemTrait ~= ITEM_TRAIT_TYPE_ARMOR_ORNATE) then
-          slotsUsed = slotsUsed + 1
-          d('PXIP -B- Retrieving ' .. itemLink .. ' into empty slot ' .. emptySlots[slotsUsed])
-          TransferFromGuildBank(x)
-          zo_callLater(function () PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count - 1) end, 1000)
-          return
-        end
-
-        -- Weapons
-        if (itemFilterType == ITEMFILTERTYPE_WEAPONS and isItemBound == false and isItemJunk == false and isItemStolen == false and isItemCrafted == false and canItemBeResearched == false and itemTrait ~= ITEM_TRAIT_TYPE_WEAPON_ORNATE) then
-          slotsUsed = slotsUsed + 1
-          d('PXIP -C- Retrieving ' .. itemLink .. ' into empty slot ' .. emptySlots[slotsUsed])
-          TransferFromGuildBank(x)
-          zo_callLater(function () PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count - 1) end, 1000)
-          return
-        end
-
-        -- Glyphs
-        if ((itemType == ITEMTYPE_GLYPH_ARMOR or itemType == ITEMTYPE_GLYPH_JEWELRY or itemType == ITEMTYPE_GLYPH_WEAPON) and isItemBound == false and isItemStolen == false and isItemCrafted == true and itemLevel == 86) then
-          slotsUsed = slotsUsed + 1
-          d('PXIP -D- Retrieving ' .. itemLink .. ' into empty slot ' .. emptySlots[slotsUsed])
-          TransferFromGuildBank(x)
-          zo_callLater(function () PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count - 1) end, 1000)
-          return
-        end
-        if ((itemType == ITEMTYPE_GLYPH_ARMOR or itemType == ITEMTYPE_GLYPH_JEWELRY or itemType == ITEMTYPE_GLYPH_WEAPON) and isItemBound == false and isItemStolen == false and itemQuality == ITEM_QUALITY_MAGIC) then
-          slotsUsed = slotsUsed + 1
-          d('PXIP -E- Retrieving ' .. itemLink .. ' into empty slot ' .. emptySlots[slotsUsed])
-          TransferFromGuildBank(x)
-          zo_callLater(function () PXInfoPanelAddon:DoTransfer(sourceBag, itemNames, count - 1) end, 1000)
-          return
-        end
-      end
-    end
-  end
-
-  if (bagEmptySlots == GetBagSize(sourceBag)) then
-    d('PXIP -- ERROR: Could not retrieve any guild bank items.')
-  end
-end
 ---------------------------------------------------------------------------------------------------------
 -- H E L P E R    F U N C T I O N S
 ---------------------------------------------------------------------------------------------------------
@@ -1116,181 +968,6 @@ function PXInfoPanelAddon:FindEmptySlots(location)
     end
   end
   return emptySlots
-end
-
-function PXInfoPanelAddon:TransferGuildBankItems()
-  if (PXInfoPanelAddon.savedVariables.enableGuildbankAutomation == false or guildName ~= PXInfoPanelAddon.savedVariables.guildbankName or PXInfoPanelAddon.GoldTransferToGuildComplete == false) then
-    return
-  end
-  if (self.GuildBankTransferDone == true) then
-    return
-  end
-  if (GetNumBagFreeSlots(BAG_GUILDBANK) < 1) then
-    d('PXIP -- Guild bank is full.')
-    self.GuildBankTransferDone = true
-    return
-  end
-
-  local bagItemCount =  GetBagSize(BAG_BACKPACK)
-  for x = 1, bagItemCount do
-    local itemLink = GetItemLink(BAG_BACKPACK, x)
-    if (itemLink ~= nil and itemLink ~= '') then
-      local canItemBeResearched = CanItemLinkBeTraitResearched(itemLink)
-      local itemName = zo_strformat("<<1>>", GetItemName(BAG_BACKPACK, x))
-      local itemLevel = GetItemLevel(BAG_BACKPACK, x)
-      local icon, stack, sellPrice, meetsUsageRequirement, locked, equipType, itemStyleId, quality = GetItemInfo(BAG_BACKPACK, x)
-      local itemTrait = GetItemLinkTraitType(itemLink)
-      local itemType, specializedItemType = GetItemLinkItemType(itemLink)
-      local itemQuality =  GetItemLinkQuality(itemLink)
-      local isItemBound = IsItemBound(BAG_BACKPACK, x)
-      local isItemCrafted = IsItemLinkCrafted(itemLink)
-      local isItemEnchantable = IsItemEnchantable(BAG_BACKPACK, x)
-      local isItemEnchantment = IsItemEnchantment(BAG_BACKPACK, x)    
-      local isItemJunk = IsItemJunk(BAG_BACKPACK, x)
-      local isItemMotifKnown = IsItemLinkBookKnown(itemLink)
-      local isItemRecipeKnown = IsItemLinkRecipeKnown(itemLink)
-      local isItemStolen = IsItemLinkStolen(itemLink)
-      local armorType = GetItemArmorType(BAG_BACKPACK, x)
-      local itemFilterType = GetItemFilterTypeInfo(BAG_BACKPACK, x)
-      local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
-      local substr = string.sub(itemName, 1, 8)
-
-      -- Intricate Jewelry
-      if (itemTrait == ITEM_TRAIT_TYPE_JEWELRY_INTRICATE and itemLevel > 30) then
-        d('PXIP -A- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Master Writs
-      if (itemType == ITEMTYPE_MASTER_WRIT) then
-        d('PXIP -B- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Anything that starts with 'Recipe: ' or 'Welkynar'
-      if (substr == 'Recipe: ' or substr == 'Welkynar') then
-        d('PXIP -C- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Non self crafted enchantments.
-      if (isItemEnchantment and isItemCrafted == false and itemLevel == 75) then
-        d('PXIP -D- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Armor
-      if (itemFilterType == ITEMFILTERTYPE_ARMOR and isItemBound == false and isItemJunk == false and isItemStolen == false and isItemCrafted == false and canItemBeResearched == false and itemTrait ~= ITEM_TRAIT_TYPE_ARMOR_ORNATE) then
-        d('PXIP -E- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Weapons
-      if (itemFilterType == ITEMFILTERTYPE_WEAPONS and isItemBound == false and isItemJunk == false and isItemStolen == false and isItemCrafted == false and canItemBeResearched == false and itemTrait ~= ITEM_TRAIT_TYPE_WEAPON_ORNATE) then
-        d('PXIP -F- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Glyphs
-      if ((itemType == ITEMTYPE_GLYPH_ARMOR or itemType == ITEMTYPE_GLYPH_JEWELRY or itemType == ITEMTYPE_GLYPH_WEAPON) and isItemBound == false and isItemStolen == false and isItemCrafted == true and itemLevel == 86) then
-        d('PXIP -G- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-      if ((itemType == ITEMTYPE_GLYPH_ARMOR or itemType == ITEMTYPE_GLYPH_JEWELRY or itemType == ITEMTYPE_GLYPH_WEAPON) and itemLevel == 77 and isItemBound == false and isItemStolen == false and itemQuality == ITEM_QUALITY_MAGIC) then
-        d('PXIP -H- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Known Motifs
-      if (itemType == ITEMTYPE_RACIAL_STYLE_MOTIF and isItemMotifKnown == true and isItemStolen == false) then
-        d('PXIP -I- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Known recipes
-      if (itemType == TEMTYPE_RECIPE and isItemRecipeKnown == true and isItemStolen == false) then
-        d('PXIP -J- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Style Page Containers
-      if (itemType == ITEMTYPE_CONTAINER and specializedItemType == SPECIALIZED_ITEMTYPE_CONTAINER_STYLE_PAGE and isItemBound == false) then
-        d('PXIP -K- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Research Scrolls
-      if (itemType == ITEMTYPE_TROPHY and specializedItemType == SPECIALIZED_ITEMTYPE_TROPHY_SCROLL and isItemBound == false) then
-        d('PXIP -L- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Key Fragments
-      if (itemType == ITEMTYPE_TROPHY and specializedItemType == SPECIALIZED_ITEMTYPE_TROPHY_KEY_FRAGMENT and isItemBound == false) then
-        d('PXIP -M- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- AvA Repair
-      if (specializedItemType == SPECIALIZED_ITEMTYPE_AVA_REPAIR) then
-        d('PXIP -N- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Furnishing
-      if (itemType == ITEMTYPE_RECIPE and isItemRecipeKnown == true and isItemBound == false and isItemStolen == false) then
-        d('PXIP -O- Storing ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      -- Repair Kits
-      if (itemType == ITEMTYPE_TOOL and isItemBound == false and isItemStolen == false) then
-        if (stackCountBackpack > 200 and stack < 200) then
-          d('PXIP -P- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
-          TransferToGuildBank(BAG_BACKPACK, x)
-          return
-        end
-      end
-
-      -- Soul Gems
-      if (itemType == ITEMTYPE_SOUL_GEM and isItemBound == false and isItemStolen == false) then
-        --local tier, soulGemType = GetSoulGemItemInfo(BAG_BACKPACK, x)
-        if (stackCountBackpack > 200 and stack < 200) then
-          d('PXIP -Q- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
-          TransferToGuildBank(BAG_BACKPACK, x)
-          return
-        end
-      end
-
-      -- Fish
-      if (itemType == ITEMTYPE_FISH and specializedItemType == SPECIALIZED_ITEMTYPE_FISH and isItemBound == false) then
-        d('PXIP -M- Storing ' .. stack .. ' ' .. itemLink .. ' in Guild Bank.')
-        TransferToGuildBank(BAG_BACKPACK, x)
-        return
-      end
-
-      --d('PXIP -O- ' .. itemLink .. ', itemType = ' .. itemType .. ', stackSize = ' .. stackCountBackpack .. ', stack = ' .. stack)
-    end
-  end
-  
-  self.GuildBankTransferDone = true
-  self.GuildBankTransferErrors = 0
-  d('PXIP -- Done transferring items to guild bank.')
 end
 
 function PXInfoPanelAddon:AdjustItemLink(e)
@@ -1794,7 +1471,7 @@ function PXInfoPanelAddon:UpdateUI()
 
   if (self.savedVariables.showEnlightenedPool and self.IsEnlightenedAvailableForCharacter) then
     if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
-    text = text .. newLine .. GetString(PXIP_ENLIGHTENED_POOL) .. self:MoneyString(self.EnlightenedPool)
+    text = text .. newLine .. PXInfoPanelAddon:GetEnlightenedPoolText()
 
     if GetEnlightenedPool() <= 0 and PXInfoPanelAddon.HasBeenNotifiedAboutNoEnlightenment == false then
       PXInfoPanelAddon.HasBeenNotifiedAboutNoEnlightenment = true
@@ -1858,6 +1535,13 @@ function PXInfoPanelAddon:UpdateUI()
 
   if (self.savedVariables.showSurveyCountInCurrentZone and self.SurveyCountInZone > 0) then
     text = text .. newLine .. GetString(PXIP_SURVEYS_IN_ZONE) .. ' ' .. self.SurveyCountInZone .. ', ' .. self.SurveyCountInZoneDone .. ' done. Done in ' .. self.SurveyTimeLeftInZoneMinutes .. ' minutes.'
+  end
+
+  if (self.savedVariables.showFishingStatistics and self.savedVariables.fishingStats.FishCaughtTotal > 0) then
+    text = text .. newLine .. GetString(PXIP_FISH_CAUGHT) .. ' ' .. PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession
+    text = text .. '/' .. PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtTotal
+    text = text .. ', Profits: ' .. PXInfoPanelAddon:MoneyString(PXInfoPanelAddon:Round(PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession))
+    text = text .. '/' .. PXInfoPanelAddon:MoneyString(PXInfoPanelAddon:Round(PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeTotal))
   end
 
   if (self.savedVariables.showWritStatus and self.WritStatusText ~= nill and self.WritStatusText ~= '') then
@@ -2039,6 +1723,20 @@ function PXInfoPanelAddon:BooleanToString(b)
   else
     return 'false'
   end
+end
+
+function PXInfoPanelAddon:GetEnlightenedPoolText()
+  local txt = GetString(PXIP_ENLIGHTENED_POOL)
+  local ep = self.EnlightenedPool
+
+  if (ep > 1000000) then
+    txt = txt .. self.ColorRed
+  elseif (ep > 800000) then
+    txt = txt .. self.ColorOrange
+  end
+
+  txt = txt .. self:MoneyString(ep) .. '|r'
+  return txt 
 end
 
 function PXInfoPanelAddon:FormatSeconds(secondsArg)

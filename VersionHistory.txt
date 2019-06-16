@@ -1,3 +1,9 @@
+V1.0.15
+- Removed experimental guild bank automation code.
+- Added fishing stats as an option to display.
+- Fixed survey bug.
+- Color coding enlightened pool orange when above 800k and red when above 1 mill.
+
 V1.0.14
 - No longer storing items in guild bank as this was experimental code.
 - Added stats to survey count in zone to make it more interesting to do those many surveys :)

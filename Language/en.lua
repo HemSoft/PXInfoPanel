@@ -193,7 +193,12 @@ local strings = {
   PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE        = "Show current survey count for current zone:",
   PXIP_SETTINGS_SHOW_SURVEYS_FOR_CURRENT_ZONE_TOOLTIP= "Show current survey count you have for the current zone your are in.",
   PXIP_SURVEYS_IN_ZONE                               = "Surveys in zone:",
-  PXIP_ENLIGHTENED_POOL_ABOVE_ONE_MILLION            = "Enlightened pool at or above 1 million!"
+  PXIP_ENLIGHTENED_POOL_ABOVE_ONE_MILLION            = "Enlightened pool at or above 1 million!",
+
+  -- V1.0.15 -- New strings:
+  PXIP_SETTINGS_SHOW_FISHING_STATISTICS              = "Show fishing statistics:",
+  PXIP_SETTINGS_SHOW_FISHING_STATISTICS_TOOLTIP      = "Show how many fish you catch total and for your current session.",
+  PXIP_FISH_CAUGHT                                   = "Fish Caught:"
 }
 
 for stringId, stringValue in pairs(strings) do

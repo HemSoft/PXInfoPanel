@@ -328,6 +328,14 @@ function PXInfoPanelAddon:CreateSettingsWindow()
           setFunc = function(e) self.savedVariables.showSurveyCountInCurrentZone = e; PXInfoPanelAddon:UpdateUI() end,
           default = false,
         },
+        {
+          type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_SHOW_FISHING_STATISTICS),
+          tooltip = GetString(PXIP_SETTINGS_SHOW_FISHING_STATISTICS_TOOLTIP),
+          getFunc = function() return self.savedVariables.showFishingStatistics end,
+          setFunc = function(e) self.savedVariables.showFishingStatistics = e; PXInfoPanelAddon:UpdateUI() end,
+          default = false,
+        },
       },
     },
 
