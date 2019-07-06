@@ -247,6 +247,13 @@ function PXInfoPanelAddon:CreateSettingsWindow()
         },
         {
           type    = "checkbox",
+          name    = GetString(PXIP_SETTINGS_SHOW_TOTAL_ZONE_MINUTES_PLAYED),
+          getFunc = function() return self.savedVariables.showTotalZoneMinutesPlayed end,
+          setFunc = function(e) self.savedVariables.showTotalZoneMinutesPlayed = e; PXInfoPanelAddon:UpdateUI() end,
+          default = true,
+        },
+        {
+          type    = "checkbox",
           name    = GetString(PXIP_SETTINGS_SHOW_LEVEL_PROGRESS),
           getFunc = function() return self.savedVariables.showLevelProgress end,
           setFunc = function(e) self.savedVariables.showLevelProgress = e; PXInfoPanelAddon:UpdateUI() end,

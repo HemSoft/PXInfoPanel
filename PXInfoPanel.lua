@@ -1,10 +1,11 @@
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.15",
+  Version = "1.0.16",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
+  TimeElapsedInZoneMS = 0,
   TotalGoldMade = 0,
   StartGold = 0,
   StartXP = 0,
@@ -45,9 +46,11 @@ PXInfoPanelAddon = {
   PVPLastAchievementId = -1,
   CurrentZone = '',
   CurrentSubZone = '',
+  ZoneStartTime = 0,
   SurveyCountInZone = 0,
   SurveyCountInZoneDone = 0,
   SurveyTimeLeftInZoneMinutes = 0,
+  SurveyTimeElapsed = 0,
 
   ColorGold   = '|cd8b620',
   ColorGreen  = '|c28b712',
@@ -57,6 +60,7 @@ PXInfoPanelAddon = {
   ColorBlue   = '|c2d64bc',
 
   DefaultSettings = {
+    lastLoggedIn = GetTimeStamp(),
     allWritsDoneNotified = false,
     left = 5,
     top = 20,
@@ -80,6 +84,7 @@ PXInfoPanelAddon = {
     showAchievements = true,
     showEnlightenedPool = true,
     showTotalMinutesPlayed = true,
+    showTotalZoneMinutesPlayed = false,
     showTotalGoldMade = true,
     showTotalXPMade = true,
     showTotalWritVouchers = true,
@@ -190,6 +195,7 @@ PXInfoPanelAddon.savedVariables = PXInfoPanelAddon.DefaultSettings
 -- Initialize:
 ---------------------------------------------------------------------------------------------------------
 function PXInfoPanelAddon:Initialize()
+  d('PXIP -- ' .. self.ColorGreen .. 'P|rhaero' .. self.ColorGreen .. 'X I|rnfo ' .. self.ColorGreen .. 'P|ranel loaded.')
   ZO_CreateStringId("SI_BINDING_NAME_PX_INFO_PANEL_RESET", GetString(PXIP_BINDINGS_RESET))
   ZO_CreateStringId("SI_BINDING_NAME_PX_INFO_PANEL_TOGGLE", GetString(PXIP_BINDINGS_TOGGLE))
 
@@ -593,6 +599,7 @@ function PXInfoPanelAddon:Initialize()
   PXInfoPanelAddon:GetPVPInfo()
 
   PXInfoPanelAddon.StartTimeMS = GetTimeStamp()
+  PXInfoPanelAddon.ZoneStartTime = GetTimeStamp()
   PXInfoPanelAddon.StartGold = GetCurrentMoney()
   PXInfoPanelAddon.LastGold = PXInfoPanelAddon.StartGold
   PXInfoPanelAddon.LastWritVouchers = GetCarriedCurrencyAmount(CURT_WRIT_VOUCHERS)
@@ -624,6 +631,9 @@ function PXInfoPanelAddon:Initialize()
 
   PXInfoPanelAddon.savedVariables.fishingStats.FishCaughtSession = 0
   PXInfoPanelAddon.savedVariables.fishingStats.FishGoldMadeSession = 0
+
+  d('PXIP -- Last logged in ' .. PXInfoPanelAddon:FormatSeconds(GetTimeStamp() - PXInfoPanelAddon.savedVariables.lastLoggedIn) .. ' ago.')
+  PXInfoPanelAddon.savedVariables.lastLoggedIn = GetTimeStamp()
 
   PXInfoPanelAddon:ResetCustomMonitorCounts()
   PXInfoPanelAddon:CreateSettingsWindow()
@@ -948,9 +958,11 @@ function PXInfoPanelAddon:OnZoneChange(eventCode, zoneName, subZoneName, newSubz
   PXInfoPanelAddon.CurrentZone = GetPlayerActiveZoneName()
   PXInfoPanelAddon.CurrentSubZone = GetPlayerActiveSubzoneName()
   if (oldZone ~= PXInfoPanelAddon.CurrentZone) then
+    PXInfoPanelAddon.ZoneStartTime = GetTimeStamp()
     PXInfoPanelAddon.SurveyCountInZoneDone = 0
     PXInfoPanelAddon.SurveyTimeLeftInZoneMinutes = 0
     PXInfoPanelAddon:UpdateSurveyCount()
+    PXInfoPanelAddon:UpdateUI()
   end
 end
 
@@ -1031,6 +1043,10 @@ end
 
 function PXInfoPanelAddon:GetTimeElapsed()
   return GetTimeStamp() - PXInfoPanelAddon.StartTimeMS 
+end
+
+function PXInfoPanelAddon:GetZoneTimeElapsed()
+  return GetTimeStamp() - PXInfoPanelAddon.ZoneStartTime
 end
 
 function PXInfoPanelAddon:Notify(text, sound)
@@ -1312,8 +1328,13 @@ function PXInfoPanelAddon:UpdateUI()
   if PXInfoPanelAddon.TimeElapsedMS == 0 then
     PXInfoPanelAddon.TimeElapsedMS = 1
   end
+  PXInfoPanelAddon.TimeElapsedInZoneMS = PXInfoPanelAddon.GetZoneTimeElapsed()
+  if PXInfoPanelAddon.TimeElapsedInZoneMS == 0 then
+    PXInfoPanelAddon.TimeElapsedInZoneMS = 1
+  end
 
   local timePlayedMins = self:Round(PXInfoPanelAddon.TimeElapsedMS / 60, 0)
+  local timePlayedMinsInZone = self:Round(PXInfoPanelAddon:GetZoneTimeElapsed() / 60)
   local goldAMinute = self:Round((PXInfoPanelAddon.TotalGoldMade / self:Round(PXInfoPanelAddon.TimeElapsedMS)) * 60, 0)
 
   local isChampion = IsUnitChampion('player')
@@ -1490,9 +1511,13 @@ function PXInfoPanelAddon:UpdateUI()
     end
   end
 
+  local zoneText = ''
+  if (self.savedVariables.showTotalZoneMinutesPlayed) then
+    zoneText = ' -- ' .. GetString(PXIP_TIME_PLAYED_IN_ZONE) .. ' ' .. timePlayedMinsInZone
+  end
   if (self.savedVariables.showTotalMinutesPlayed) then
     if (text == nil or text == '') then newLine = '' else  newLine = '\n' end
-    text = text .. newLine .. GetString(PXIP_TOTAL_MINS_PLAYED) .. timePlayedMins
+    text = text .. newLine .. GetString(PXIP_TOTAL_MINS_PLAYED) .. timePlayedMins .. zoneText
   end
 
   if (self.savedVariables.showLevelProgress and self.CurrentXP ~= nil and self.CurrentXP > 0) then
@@ -1882,7 +1907,7 @@ function PXInfoPanelAddon:SafeAssign(text)
 end
 
 function PXInfoPanelAddon:UpdateSurveyCount()
-  local bagItemCount =  GetBagSize(BAG_BACKPACK)
+  local bagItemCount = GetBagSize(BAG_BACKPACK)
   local SurveyCountInZoneBefore = self.SurveyCountInZone
   self.SurveyCountInZone = 0
   for x = 1, bagItemCount do
@@ -1894,6 +1919,10 @@ function PXInfoPanelAddon:UpdateSurveyCount()
         if (string.match(itemName, self.CurrentZone)) then
           local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
           self.SurveyCountInZone = self.SurveyCountInZone + stackCountBackpack
+        -- Exceptions to the rule here:
+        elseif (self.CurrentZone == "Alik'r Desert" and string.match(itemName, "Alik'r")) then
+          local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
+          self.SurveyCountInZone = self.SurveyCountInZone + stackCountBackpack
         end
       end
     end
@@ -1903,14 +1932,16 @@ function PXInfoPanelAddon:UpdateSurveyCount()
     self.SurveyCountInZoneDone = 0
   end
   if (self.SurveyCountInZone > 0) then
-    --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone .. ', self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone)
-    self.TimeElapsedMS = PXInfoPanelAddon.GetTimeElapsed()
-    if self.TimeElapsedMS == 0 then
-      self.TimeElapsedMS = 1
+    self.SurveyTimeElapsed = PXInfoPanelAddon:GetZoneTimeElapsed()
+    if self.SurveyTimeElapsed == 0 then
+      self.SurveyTimeElapsed = 1
     end
 
+    --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone .. ', self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone)
+    --d('PXIP -- UpdateSurveyCount() -- self.SurveyTimeElapsed = ' .. self.SurveyTimeElapsed)
+
     if (self.SurveyCountInZoneDone > 0) then
-      local averageSurveyTimeInSeconds = self:Round(PXInfoPanelAddon.TimeElapsedMS / self.SurveyCountInZoneDone, 0)
+      local averageSurveyTimeInSeconds = self:Round(PXInfoPanelAddon.SurveyTimeElapsed / self.SurveyCountInZoneDone, 0)
       local surveyTimeLeftInSeconds = averageSurveyTimeInSeconds * self.SurveyCountInZone
       self.SurveyTimeLeftInZoneMinutes = self:Round(surveyTimeLeftInSeconds / 60, 0)
 

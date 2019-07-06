@@ -198,7 +198,11 @@ local strings = {
   -- V1.0.15 -- New strings:
   PXIP_SETTINGS_SHOW_FISHING_STATISTICS              = "Show fishing statistics:",
   PXIP_SETTINGS_SHOW_FISHING_STATISTICS_TOOLTIP      = "Show how many fish you catch total and for your current session.",
-  PXIP_FISH_CAUGHT                                   = "Fish Caught:"
+  PXIP_FISH_CAUGHT                                   = "Fish Caught:",
+
+  -- V1.0.16 -- New strings:
+  PXIP_SETTINGS_SHOW_TOTAL_ZONE_MINUTES_PLAYED       = "Show total minutes played in current zone:",
+  PXIP_TIME_PLAYED_IN_ZONE                           = "In Current Zone:"
 }
 
 for stringId, stringValue in pairs(strings) do
