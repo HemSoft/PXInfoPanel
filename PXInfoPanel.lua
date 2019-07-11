@@ -1,7 +1,9 @@
+-- Ideas:
+-- - Inventory Goals per type, like Raw materials, alchemy, etc...
 -- TODO: Test disabling all features....
 PXInfoPanelAddon = {
   Name = "PXInfoPanel",
-  Version = "1.0.16",
+  Version = "1.0.17",
   DividerLine = '-----------------------------------------------------------------------------',
   StartTimeMS = 0,
   TimeElapsedMS = 0,
@@ -47,10 +49,14 @@ PXInfoPanelAddon = {
   CurrentZone = '',
   CurrentSubZone = '',
   ZoneStartTime = 0,
-  SurveyCountInZone = 0,
-  SurveyCountInZoneDone = 0,
-  SurveyTimeLeftInZoneMinutes = 0,
-  SurveyTimeElapsed = 0,
+  SurveyInfo = {
+    CountInZone = 0,
+    StackCountInZone = 0,
+    LocationsInZone = 0,
+    CountInZoneDone = 0,
+    TimeLeftInZoneMinutes = 0,
+    TimeElapsed = 0,
+  },
 
   ColorGold   = '|cd8b620',
   ColorGreen  = '|c28b712',
@@ -119,9 +125,6 @@ PXInfoPanelAddon = {
     vendorAutomationMaxUnitPrice = 10,
     vendorAutomationInventoryCount = 10,
     enableVendorAutomationDebugging = false,
-    enableGuildBankAutomation = false,
-    guildbankAutomationGoldOnCharacter = 100000,
-    guildbankName = '',
     enableMonitorResearch = false,
     enableMonitorResearchBlacksmithing = false,
     enableMonitorResearchClothing = false,
@@ -532,7 +535,14 @@ function PXInfoPanelAddon:Initialize()
   EVENT_MANAGER:RegisterForEvent(PXInfoPanelAddon.Name, EVENT_INVENTORY_SINGLE_SLOT_UPDATE,
     function(eventCode, bagId, slotId, isNewItem, itemSoundCategory, inventoryUpdateReason, stackCountChange)
       local itemLink = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
+      if (itemLink == nil or stackCountChange < 1) then
+        return
+      end
+
       local mPrice = PXInfoPanelAddon:GetItemPrice(itemLink)
+      if (mPrice <= 0) then
+        return
+      end
       local tPrice = PXInfoPanelAddon:Round(stackCountChange * mPrice)
       PXInfoPanelAddon.TotalGoldMade = PXInfoPanelAddon.TotalGoldMade + tPrice
       PXInfoPanelAddon:UpdateUI()
@@ -959,8 +969,8 @@ function PXInfoPanelAddon:OnZoneChange(eventCode, zoneName, subZoneName, newSubz
   PXInfoPanelAddon.CurrentSubZone = GetPlayerActiveSubzoneName()
   if (oldZone ~= PXInfoPanelAddon.CurrentZone) then
     PXInfoPanelAddon.ZoneStartTime = GetTimeStamp()
-    PXInfoPanelAddon.SurveyCountInZoneDone = 0
-    PXInfoPanelAddon.SurveyTimeLeftInZoneMinutes = 0
+    PXInfoPanelAddon.SurveyInfo.CountInZoneDone = 0
+    PXInfoPanelAddon.SurveyInfo.TimeLeftInZoneMinutes = 0
     PXInfoPanelAddon:UpdateSurveyCount()
     PXInfoPanelAddon:UpdateUI()
   end
@@ -988,46 +998,17 @@ function PXInfoPanelAddon:AdjustItemLink(e)
   end
 end
 
-function PXInfoPanelAddon:GetATTPrice(itemLink)
-    if (ArkadiusTradeTools == nil or ArkadiusTradeTools.Modules.Sales == nil) then
-        return nil
-    end
-    local days = ArkadiusTradeToolsSalesData.settings.tooltips.days
-    local startingDate = GetTimeStamp() - (SECONDS_IN_DAY * days)
-    local itemPrice = ArkadiusTradeTools.Modules.Sales:GetAveragePricePerItem(itemLink, startingDate)
-    return itemPrice
-end
-
-function PXInfoPanelAddon:GetMMPrice(itemLink)
-    if (MasterMerchant == nil) then
-        return nil
-    end
-    local itemStats = MasterMerchant:itemStats(itemLink, false)
-    if (itemStats == nil) then
-        return itemStats
-    else
-        return itemStats.avgPrice
-    end
-end
-
-function PXInfoPanelAddon:GetTTCPrice(itemLink)
-    if (TamrielTradeCentrePrice == nil) then
-        return nil
-    end
-    local priceInfo = TamrielTradeCentrePrice:GetPriceInfo(itemLink)
-    if (priceInfo == nil) then
-        return priceInfo
-    else
-        return priceInfo.SuggestedPrice
-    end
-end
-
 function PXInfoPanelAddon:GetItemPrice(itemLink)
-    local price = PXInfoPanelAddon:GetATTPrice(itemLink) or PXInfoPanelAddon:GetMMPrice(itemLink) or PXInfoPanelAddon:GetTTCPrice(itemLink)
-    if (price == nil or price == 0) then
-        price = GetItemLinkValue(itemLink, true)
-    end
-    return price
+  if (itemLink == nil or LibPrice == nil) then
+    return 0
+  end
+
+  local price, s, f = LibPrice.ItemLinkToPriceGold(itemLink, "mm", "att", "ttc")
+  if (price == nil) then
+    return 0
+  end
+
+  return price
 end
 
 function PXInfoPanelAddon:GetPVPInfo()
@@ -1558,8 +1539,8 @@ function PXInfoPanelAddon:UpdateUI()
     text = text .. newLine .. self.LastLoreBookLearned
   end
 
-  if (self.savedVariables.showSurveyCountInCurrentZone and self.SurveyCountInZone > 0) then
-    text = text .. newLine .. GetString(PXIP_SURVEYS_IN_ZONE) .. ' ' .. self.SurveyCountInZone .. ', ' .. self.SurveyCountInZoneDone .. ' done. Done in ' .. self.SurveyTimeLeftInZoneMinutes .. ' minutes.'
+  if (self.savedVariables.showSurveyCountInCurrentZone and self.SurveyInfo.CountInZone > 0) then
+    text = text .. newLine .. GetString(PXIP_SURVEYS_IN_ZONE) .. ' ' .. self.SurveyInfo.CountInZone .. ' (' .. self.SurveyInfo.StackCountInZone .. ' locations), ' .. self.SurveyInfo.CountInZoneDone .. ' done. Done in ' .. self.SurveyInfo.TimeLeftInZoneMinutes .. ' minutes.'
   end
 
   if (self.savedVariables.showFishingStatistics and self.savedVariables.fishingStats.FishCaughtTotal > 0) then
@@ -1908,8 +1889,10 @@ end
 
 function PXInfoPanelAddon:UpdateSurveyCount()
   local bagItemCount = GetBagSize(BAG_BACKPACK)
-  local SurveyCountInZoneBefore = self.SurveyCountInZone
-  self.SurveyCountInZone = 0
+  local SurveyCountInZoneBefore = self.SurveyInfo.CountInZone
+  self.SurveyInfo.CountInZone = 0
+  self.SurveyInfo.StackCountInZone = 0
+  
   for x = 1, bagItemCount do
     local itemLink = GetItemLink(BAG_BACKPACK, x)
     if (itemLink ~= nil and itemLink ~= '') then
@@ -1918,39 +1901,31 @@ function PXInfoPanelAddon:UpdateSurveyCount()
         local itemName = (zo_strformat(GetItemName(BAG_BACKPACK, x)):match "^%s*(.-)%s*$")
         if (string.match(itemName, self.CurrentZone)) then
           local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
-          self.SurveyCountInZone = self.SurveyCountInZone + stackCountBackpack
+          self.SurveyInfo.CountInZone = self.SurveyInfo.CountInZone + stackCountBackpack
+          self.SurveyInfo.StackCountInZone = self.SurveyInfo.StackCountInZone + 1
         -- Exceptions to the rule here:
         elseif (self.CurrentZone == "Alik'r Desert" and string.match(itemName, "Alik'r")) then
           local stackCountBackpack, stackCountBank, stackCountCraftBag = GetItemLinkStacks(itemLink)
-          self.SurveyCountInZone = self.SurveyCountInZone + stackCountBackpack
+          self.SurveyInfo.CountInZone = self.SurveyInfo.CountInZone + stackCountBackpack
+          self.SurveyInfo.StackCountInZone = self.SurveyInfo.StackCountInZone + 1
         end
       end
     end
   end
-  self.SurveyCountInZoneDone = self.SurveyCountInZoneDone + (SurveyCountInZoneBefore - self.SurveyCountInZone)
-  if (self.SurveyCountInZoneDone < 0) then
-    self.SurveyCountInZoneDone = 0
+  self.SurveyInfo.CountInZoneDone = self.SurveyInfo.CountInZoneDone + (SurveyCountInZoneBefore - self.SurveyInfo.CountInZone)
+  if (self.SurveyInfo.CountInZoneDone < 0) then
+    self.SurveyInfo.CountInZoneDone = 0
   end
-  if (self.SurveyCountInZone > 0) then
-    self.SurveyTimeElapsed = PXInfoPanelAddon:GetZoneTimeElapsed()
-    if self.SurveyTimeElapsed == 0 then
-      self.SurveyTimeElapsed = 1
+  if (self.SurveyInfo.CountInZone > 0) then
+    self.SurveyInfo.TimeElapsed = PXInfoPanelAddon:GetZoneTimeElapsed()
+    if self.SurveyInfo.TimeElapsed == 0 then
+      self.SurveyInfo.TimeElapsed = 1
     end
 
-    --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone .. ', self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone)
-    --d('PXIP -- UpdateSurveyCount() -- self.SurveyTimeElapsed = ' .. self.SurveyTimeElapsed)
-
-    if (self.SurveyCountInZoneDone > 0) then
-      local averageSurveyTimeInSeconds = self:Round(PXInfoPanelAddon.SurveyTimeElapsed / self.SurveyCountInZoneDone, 0)
-      local surveyTimeLeftInSeconds = averageSurveyTimeInSeconds * self.SurveyCountInZone
-      self.SurveyTimeLeftInZoneMinutes = self:Round(surveyTimeLeftInSeconds / 60, 0)
-
-      --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZone = ' .. self.SurveyCountInZone);
-      --d('PXIP -- UpdateSurveyCount() -- self.SurveyCountInZoneDone = ' .. self.SurveyCountInZoneDone);
-      --d('PXIP -- UpdateSurveyCount() -- SurveyCountInZoneBefore = ' .. SurveyCountInZoneBefore);
-      --d('PXIP -- UpdateSurveyCount() -- averageSurveyTimeInSeconds = ' .. averageSurveyTimeInSeconds);
-      --d('PXIP -- UpdateSurveyCount() -- surveyTimeLeftInSeconds = ' .. surveyTimeLeftInSeconds);
-      --d('PXIP -- UpdateSurveyCount() -- self.SurveyTimeLeftInZoneMinutes = ' .. self.SurveyTimeLeftInZoneMinutes);
+    if (self.SurveyInfo.CountInZoneDone > 0) then
+      local averageSurveyTimeInSeconds = self:Round(self.SurveyInfo.TimeElapsed / self.SurveyInfo.CountInZoneDone, 0)
+      local surveyTimeLeftInSeconds = averageSurveyTimeInSeconds * self.SurveyInfo.CountInZone
+      self.SurveyInfo.TimeLeftInZoneMinutes = self:Round(surveyTimeLeftInSeconds / 60, 0)
     end
   end
 end
